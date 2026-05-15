@@ -1,0 +1,724 @@
+<!-- post-listing.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Post Listing | PCPartDeals</title>
+
+  <link rel="stylesheet" href="post-listing-style.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="header">
+
+    <div class="container nav-container">
+
+      <a href="https://pcpartdeals.eu/" class="logo">
+        PC<span>PartDeals</span>
+      </a>
+
+      <nav class="nav" id="navMenu">
+
+        <a href="https://pcpartdeals.eu/">Home</a>
+        <a href="https://pcpartdeals.eu/browse">Browse</a>
+        <a href="https://pcpartdeals.eu/post-listing" class="active">
+          Post Listing
+        </a>
+
+      </nav>
+
+      <button class="hamburger" id="hamburgerBtn">
+
+        <span></span>
+        <span></span>
+        <span></span>
+
+      </button>
+
+    </div>
+
+  </header>
+
+  <!-- PAGE -->
+  <main class="page">
+
+    <div class="container">
+
+      <div class="page-grid">
+
+        <!-- LEFT -->
+        <section class="info-section">
+
+          <div class="tag">
+            Share Marketplace Deals
+          </div>
+
+          <h1>
+            Post deals from
+            <span>Yaga, Osta & Vinted</span>
+          </h1>
+
+          <p>
+            PCPartDeals collects the best hardware deals
+            from trusted marketplaces into one place.
+          </p>
+
+          <div class="feature-list">
+
+            <div class="feature-item">
+              <div class="feature-dot blue"></div>
+
+              <span>
+                Only Yaga.ee, Osta.ee and Vinted links
+              </span>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-dot green"></div>
+
+              <span>
+                Maximum 1 listing every 24 hours
+              </span>
+            </div>
+
+            <div class="feature-item">
+              <div class="feature-dot red"></div>
+
+              <span>
+                Login required for posting
+              </span>
+            </div>
+
+          </div>
+
+        </section>
+
+        <!-- RIGHT -->
+        <section class="form-section">
+
+          <div class="form-box">
+
+            <div class="form-header">
+
+              <h2>Create Listing</h2>
+
+              <p>
+                Submit your marketplace deal
+              </p>
+
+            </div>
+
+            <!-- LOGIN REQUIRED -->
+            <div
+              id="loginRequiredBox"
+              class="login-required hidden"
+            >
+
+              <p>
+                You must be logged in to post listings.
+              </p>
+
+              <a href="login.html" class="login-btn">
+                Go To Login
+              </a>
+
+            </div>
+
+            <!-- FORM -->
+            <form
+              id="listingForm"
+              class="hidden"
+            >
+
+              <!-- TITLE -->
+              <div class="input-group">
+
+                <label>Product Title</label>
+
+                <input
+                  type="text"
+                  id="title"
+                  placeholder="Example: Ryzen 5 5600"
+                  minlength="3"
+                  maxlength="80"
+                  required
+                />
+
+              </div>
+
+              <!-- PRODUCT TYPE -->
+              <div class="input-group">
+
+                <label>Product Category</label>
+
+                <select id="productType" required>
+
+                  <option value="">
+                    Select category
+                  </option>
+
+                  <option>
+                    Ryzen 5 5500
+                  </option>
+
+                  <option>
+                    Ryzen 5 5600
+                  </option>
+
+                  <option>
+                    Ryzen 7
+                  </option>
+
+                  <option>
+                    Intel i5
+                  </option>
+
+                  <option>
+                    Intel i7
+                  </option>
+
+                  <option>
+                    RTX 3060
+                  </option>
+
+                  <option>
+                    RTX 4060
+                  </option>
+
+                  <option>
+                    RTX 4070
+                  </option>
+
+                  <option>
+                    RX 6700 XT
+                  </option>
+
+                  <option>
+                    Gaming PC
+                  </option>
+
+                  <option>
+                    RAM
+                  </option>
+
+                  <option>
+                    SSD
+                  </option>
+
+                  <option>
+                    Motherboard
+                  </option>
+
+                </select>
+
+              </div>
+
+              <!-- PRICE -->
+              <div class="input-group">
+
+                <label>Price (€)</label>
+
+                <input
+                  type="number"
+                  id="price"
+                  min="1"
+                  max="100000"
+                  required
+                />
+
+              </div>
+
+              <!-- LISTING URL -->
+              <div class="input-group">
+
+                <label>
+                  Marketplace Link
+                </label>
+
+                <input
+                  type="url"
+                  id="externalLink"
+                  placeholder="https://www.yaga.ee/..."
+                  required
+                />
+
+                <small>
+                  Only yaga.ee, osta.ee or vinted.com
+                </small>
+
+              </div>
+
+              <!-- IMAGE URL -->
+              <div class="input-group">
+
+                <label>
+                  Product Image URL
+                </label>
+
+                <input
+                  type="url"
+                  id="imageUrl"
+                  placeholder="https://..."
+                  required
+                />
+
+                <small>
+                  Image must also come from allowed marketplaces
+                </small>
+
+              </div>
+
+              <!-- PREVIEW -->
+              <div
+                class="preview-box hidden"
+                id="previewBox"
+              >
+
+                <img
+                  id="previewImage"
+                  alt="Preview"
+                />
+
+              </div>
+
+              <!-- SUBMIT -->
+              <button
+                type="submit"
+                class="submit-btn"
+                id="submitBtn"
+              >
+                Publish Listing
+              </button>
+
+              <!-- STATUS -->
+              <p
+                class="status-message"
+                id="statusMessage"
+              ></p>
+
+            </form>
+
+          </div>
+
+        </section>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script type="module">
+
+    import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged
+    }
+    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      serverTimestamp,
+      doc,
+      setDoc,
+      getDocs,
+      query,
+      where
+    }
+    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+
+    // FIREBASE CONFIG
+    const firebaseConfig = {
+      apiKey: "AIzaSyB9SrAC073Fhn3Z_2vZpqlX25HLIGFuB9A",
+      authDomain: "pcpartdealseu.firebaseapp.com",
+      projectId: "pcpartdealseu",
+      storageBucket: "pcpartdealseu.firebasestorage.app",
+      messagingSenderId: "912036519057",
+      appId: "1:912036519057:web:cde4d266c53c2229ad3330",
+      measurementId: "G-FPQ8YQ9EM0"
+    };
+
+    const app =
+      initializeApp(firebaseConfig);
+
+    const auth =
+      getAuth(app);
+
+    const db =
+      getFirestore(app);
+
+    // ELEMENTS
+    const listingForm =
+      document.getElementById("listingForm");
+
+    const loginRequiredBox =
+      document.getElementById(
+        "loginRequiredBox"
+      );
+
+    const statusMessage =
+      document.getElementById(
+        "statusMessage"
+      );
+
+    const submitBtn =
+      document.getElementById(
+        "submitBtn"
+      );
+
+    const imageUrlInput =
+      document.getElementById(
+        "imageUrl"
+      );
+
+    const previewBox =
+      document.getElementById(
+        "previewBox"
+      );
+
+    const previewImage =
+      document.getElementById(
+        "previewImage"
+      );
+
+    let currentUser = null;
+
+    // AUTH CHECK
+    onAuthStateChanged(auth, (user) => {
+
+      if (user) {
+
+        currentUser = user;
+
+        listingForm.classList.remove(
+          "hidden"
+        );
+
+        loginRequiredBox.classList.add(
+          "hidden"
+        );
+
+      } else {
+
+        listingForm.classList.add(
+          "hidden"
+        );
+
+        loginRequiredBox.classList.remove(
+          "hidden"
+        );
+
+      }
+
+    });
+
+    // VALID MARKETPLACE LINKS
+    function isAllowedMarketplace(url) {
+
+      try {
+
+        const parsed =
+          new URL(url);
+
+        const host =
+          parsed.hostname.toLowerCase();
+
+        return (
+          host.includes("yaga.ee") ||
+          host.includes("osta.ee") ||
+          host.includes("vinted.com") ||
+          host.includes("vinted.ee")
+        );
+
+      } catch {
+
+        return false;
+      }
+
+    }
+
+    // STATUS
+    function showMessage(
+      message,
+      type = "error"
+    ) {
+
+      statusMessage.textContent =
+        message;
+
+      statusMessage.className =
+        `status-message ${type}`;
+
+    }
+
+    // IMAGE PREVIEW
+    imageUrlInput.addEventListener(
+      "input",
+      () => {
+
+        const value =
+          imageUrlInput.value.trim();
+
+        if (
+          value &&
+          isAllowedMarketplace(value)
+        ) {
+
+          previewImage.src = value;
+
+          previewBox.classList.remove(
+            "hidden"
+          );
+
+        } else {
+
+          previewBox.classList.add(
+            "hidden"
+          );
+
+        }
+
+      }
+    );
+
+    // FORM SUBMIT
+    listingForm.addEventListener(
+      "submit",
+      async (e) => {
+
+        e.preventDefault();
+
+        if (!currentUser) {
+
+          showMessage(
+            "You must be logged in."
+          );
+
+          return;
+        }
+
+        const title =
+          document
+            .getElementById("title")
+            .value
+            .trim();
+
+        const productType =
+          document
+            .getElementById("productType")
+            .value;
+
+        const price =
+          Number(
+            document
+              .getElementById("price")
+              .value
+          );
+
+        const externalLink =
+          document
+            .getElementById(
+              "externalLink"
+            )
+            .value
+            .trim();
+
+        const imageUrl =
+          document
+            .getElementById("imageUrl")
+            .value
+            .trim();
+
+        // LINK VALIDATION
+        if (
+          !isAllowedMarketplace(
+            externalLink
+          )
+        ) {
+
+          showMessage(
+            "Invalid marketplace URL."
+          );
+
+          return;
+        }
+
+        // IMAGE VALIDATION
+        if (
+          !isAllowedMarketplace(
+            imageUrl
+          )
+        ) {
+
+          showMessage(
+            "Image must come from Yaga, Osta or Vinted."
+          );
+
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent =
+          "Publishing...";
+
+        try {
+
+          // 24h CHECK
+          const last24h =
+            new Date(
+              Date.now() -
+              24 * 60 * 60 * 1000
+            );
+
+          const q = query(
+            collection(db, "listings"),
+            where(
+              "sellerUid",
+              "==",
+              currentUser.uid
+            ),
+            where(
+              "createdAt",
+              ">=",
+              last24h
+            )
+          );
+
+          const existing =
+            await getDocs(q);
+
+          if (!existing.empty) {
+
+            showMessage(
+              "You can only post 1 listing every 24 hours."
+            );
+
+            submitBtn.disabled = false;
+
+            submitBtn.textContent =
+              "Publish Listing";
+
+            return;
+          }
+
+          // CREATE LISTING
+          await addDoc(
+            collection(db, "listings"),
+            {
+
+              title,
+              productType,
+              price,
+              externalLink,
+              imageUrl,
+
+              sellerUid:
+                currentUser.uid,
+
+              sellerEmail:
+                currentUser.email,
+
+              createdAt:
+                serverTimestamp()
+
+            }
+          );
+
+          // DAILY TRACKING DOC
+          const now =
+            new Date();
+
+          const dailyDocId =
+            `${currentUser.uid}_${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`;
+
+          await setDoc(
+            doc(
+              db,
+              "userDailyPosts",
+              dailyDocId
+            ),
+            {
+              uid: currentUser.uid,
+              createdAt:
+                serverTimestamp()
+            }
+          );
+
+          showMessage(
+            "Listing published successfully.",
+            "success"
+          );
+
+          listingForm.reset();
+
+          previewBox.classList.add(
+            "hidden"
+          );
+
+        } catch (error) {
+
+          console.error(error);
+
+          showMessage(
+            "Failed to publish listing."
+          );
+
+        } finally {
+
+          submitBtn.disabled = false;
+
+          submitBtn.textContent =
+            "Publish Listing";
+
+        }
+
+      }
+    );
+
+    // MOBILE MENU
+    const hamburgerBtn =
+      document.getElementById(
+        "hamburgerBtn"
+      );
+
+    const navMenu =
+      document.getElementById(
+        "navMenu"
+      );
+
+    hamburgerBtn.addEventListener(
+      "click",
+      () => {
+
+        navMenu.classList.toggle(
+          "active"
+        );
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
