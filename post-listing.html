@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8" />
 
   <meta
@@ -11,7 +12,10 @@
 
   <title>Post Listing | PCPartDeals</title>
 
-  <link rel="stylesheet" href="post-listing-style.css" />
+  <link
+    rel="stylesheet"
+    href="post-listing-style.css"
+  />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,6 +24,7 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
+
 </head>
 <body>
 
@@ -28,21 +33,33 @@
 
     <div class="container nav-container">
 
-      <a href="https://pcpartdeals.eu/" class="logo">
+      <a href="index.html" class="logo">
         PC<span>PartDeals</span>
       </a>
 
       <nav class="nav" id="navMenu">
 
-        <a href="https://pcpartdeals.eu/">Home</a>
-        <a href="https://pcpartdeals.eu/browse">Browse</a>
-        <a href="https://pcpartdeals.eu/post-listing" class="active">
+        <a href="index.html">
+          Home
+        </a>
+
+        <a href="browse.html">
+          Browse
+        </a>
+
+        <a
+          href="post-listing.html"
+          class="active"
+        >
           Post Listing
         </a>
 
       </nav>
 
-      <button class="hamburger" id="hamburgerBtn">
+      <button
+        class="hamburger"
+        id="hamburgerBtn"
+      >
 
         <span></span>
         <span></span>
@@ -65,43 +82,49 @@
         <section class="info-section">
 
           <div class="tag">
-            Share Marketplace Deals
+            Marketplace Deal Aggregator
           </div>
 
           <h1>
-            Post deals from
-            <span>Yaga, Osta & Vinted</span>
+            Share the best
+            <span>hardware deals</span>
           </h1>
 
           <p>
-            PCPartDeals collects the best hardware deals
-            from trusted marketplaces into one place.
+            Add listings from Yaga, Osta and Vinted
+            so buyers can discover everything in one place.
           </p>
 
           <div class="feature-list">
 
             <div class="feature-item">
+
               <div class="feature-dot blue"></div>
 
               <span>
-                Only Yaga.ee, Osta.ee and Vinted links
+                Login required for publishing
               </span>
+
             </div>
 
             <div class="feature-item">
+
               <div class="feature-dot green"></div>
 
               <span>
-                Maximum 1 listing every 24 hours
+                One listing every 24 hours
               </span>
+
             </div>
 
             <div class="feature-item">
+
               <div class="feature-dot red"></div>
 
               <span>
-                Login required for posting
+                Only approved marketplaces allowed
               </span>
+
             </div>
 
           </div>
@@ -118,22 +141,25 @@
               <h2>Create Listing</h2>
 
               <p>
-                Submit your marketplace deal
+                Publish a PC hardware deal
               </p>
 
             </div>
 
             <!-- LOGIN REQUIRED -->
             <div
-              id="loginRequiredBox"
+              id="loginRequired"
               class="login-required hidden"
             >
 
               <p>
-                You must be logged in to post listings.
+                You must be logged in to post.
               </p>
 
-              <a href="login.html" class="login-btn">
+              <a
+                href="login.html"
+                class="login-link"
+              >
                 Go To Login
               </a>
 
@@ -148,14 +174,16 @@
               <!-- TITLE -->
               <div class="input-group">
 
-                <label>Product Title</label>
+                <label>
+                  Product Title
+                </label>
 
                 <input
                   type="text"
                   id="title"
-                  placeholder="Example: Ryzen 5 5600"
+                  placeholder="Example: RTX 3070 Gaming X Trio"
                   minlength="3"
-                  maxlength="80"
+                  maxlength="100"
                   required
                 />
 
@@ -164,48 +192,33 @@
               <!-- PRODUCT TYPE -->
               <div class="input-group">
 
-                <label>Product Category</label>
+                <label>
+                  Product Category
+                </label>
 
-                <select id="productType" required>
+                <select
+                  id="productType"
+                  required
+                >
 
                   <option value="">
-                    Select category
+                    Select Category
                   </option>
 
                   <option>
-                    Ryzen 5 5500
+                    Ryzen CPU
                   </option>
 
                   <option>
-                    Ryzen 5 5600
+                    Intel CPU
                   </option>
 
                   <option>
-                    Ryzen 7
+                    NVIDIA GPU
                   </option>
 
                   <option>
-                    Intel i5
-                  </option>
-
-                  <option>
-                    Intel i7
-                  </option>
-
-                  <option>
-                    RTX 3060
-                  </option>
-
-                  <option>
-                    RTX 4060
-                  </option>
-
-                  <option>
-                    RTX 4070
-                  </option>
-
-                  <option>
-                    RX 6700 XT
+                    AMD GPU
                   </option>
 
                   <option>
@@ -221,7 +234,19 @@
                   </option>
 
                   <option>
+                    HDD
+                  </option>
+
+                  <option>
                     Motherboard
+                  </option>
+
+                  <option>
+                    PSU
+                  </option>
+
+                  <option>
+                    CPU Cooler
                   </option>
 
                 </select>
@@ -231,11 +256,14 @@
               <!-- PRICE -->
               <div class="input-group">
 
-                <label>Price (€)</label>
+                <label>
+                  Price (€)
+                </label>
 
                 <input
                   type="number"
                   id="price"
+                  placeholder="299"
                   min="1"
                   max="100000"
                   required
@@ -243,11 +271,11 @@
 
               </div>
 
-              <!-- LISTING URL -->
+              <!-- EXTERNAL LINK -->
               <div class="input-group">
 
                 <label>
-                  Marketplace Link
+                  Marketplace Listing URL
                 </label>
 
                 <input
@@ -258,7 +286,11 @@
                 />
 
                 <small>
-                  Only yaga.ee, osta.ee or vinted.com
+                  Allowed:
+                  yaga.ee,
+                  osta.ee,
+                  vinted.com,
+                  vinted.ee
                 </small>
 
               </div>
@@ -278,15 +310,15 @@
                 />
 
                 <small>
-                  Image must also come from allowed marketplaces
+                  Image must come from approved marketplaces
                 </small>
 
               </div>
 
               <!-- PREVIEW -->
               <div
-                class="preview-box hidden"
-                id="previewBox"
+                class="preview hidden"
+                id="preview"
               >
 
                 <img
@@ -307,8 +339,8 @@
 
               <!-- STATUS -->
               <p
-                class="status-message"
                 id="statusMessage"
+                class="status-message"
               ></p>
 
             </form>
@@ -323,6 +355,7 @@
 
   </main>
 
+  <!-- FIREBASE -->
   <script type="module">
 
     import { initializeApp }
@@ -341,9 +374,7 @@
       serverTimestamp,
       doc,
       setDoc,
-      getDocs,
-      query,
-      where
+      getDoc
     }
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
@@ -359,6 +390,7 @@
       measurementId: "G-FPQ8YQ9EM0"
     };
 
+    // INIT
     const app =
       initializeApp(firebaseConfig);
 
@@ -370,11 +402,13 @@
 
     // ELEMENTS
     const listingForm =
-      document.getElementById("listingForm");
-
-    const loginRequiredBox =
       document.getElementById(
-        "loginRequiredBox"
+        "listingForm"
+      );
+
+    const loginRequired =
+      document.getElementById(
+        "loginRequired"
       );
 
     const statusMessage =
@@ -387,14 +421,9 @@
         "submitBtn"
       );
 
-    const imageUrlInput =
+    const preview =
       document.getElementById(
-        "imageUrl"
-      );
-
-    const previewBox =
-      document.getElementById(
-        "previewBox"
+        "preview"
       );
 
     const previewImage =
@@ -402,76 +431,133 @@
         "previewImage"
       );
 
+    const imageUrlInput =
+      document.getElementById(
+        "imageUrl"
+      );
+
     let currentUser = null;
 
-    // AUTH CHECK
-    onAuthStateChanged(auth, (user) => {
+    // AUTH STATE
+    onAuthStateChanged(
+      auth,
+      (user) => {
 
-      if (user) {
+        if (user) {
 
-        currentUser = user;
+          currentUser = user;
 
-        listingForm.classList.remove(
-          "hidden"
-        );
+          listingForm.classList.remove(
+            "hidden"
+          );
 
-        loginRequiredBox.classList.add(
-          "hidden"
-        );
+          loginRequired.classList.add(
+            "hidden"
+          );
 
-      } else {
+        } else {
 
-        listingForm.classList.add(
-          "hidden"
-        );
+          listingForm.classList.add(
+            "hidden"
+          );
 
-        loginRequiredBox.classList.remove(
-          "hidden"
-        );
+          loginRequired.classList.remove(
+            "hidden"
+          );
+
+        }
 
       }
-
-    function isAllowedMarketplace(url) {
-
-  try {
-
-    const parsed =
-      new URL(url);
-
-    const host =
-      parsed.hostname.toLowerCase();
-
-    return (
-
-      host.includes("yaga.ee")
-
-      ||
-
-      host.includes("osta.ee")
-
-      ||
-
-      host.includes("img-osta.ee")
-
-      ||
-
-      host.includes("vinted.com")
-
-      ||
-
-      host.includes("vinted.ee")
-
-      ||
-
-      host.includes("vinted.net")
-
     );
 
-  } catch {
+    // VALIDATOR
+    function isAllowedMarketplace(
+      url
+    ) {
 
-    return false;
-  }
-}
+      try {
+
+        const parsed =
+          new URL(url);
+
+        const host =
+          parsed.hostname.toLowerCase();
+
+        return (
+
+          host.includes("yaga.ee")
+
+          ||
+
+          host.includes("osta.ee")
+
+          ||
+
+          host.includes("img-osta.ee")
+
+          ||
+
+          host.includes("vinted.com")
+
+          ||
+
+          host.includes("vinted.ee")
+
+          ||
+
+          host.includes("vinted.net")
+
+        );
+
+      } catch {
+
+        return false;
+      }
+
+    }
+
+    // STATUS
+    function showMessage(
+      message,
+      type = "error"
+    ) {
+
+      statusMessage.textContent =
+        message;
+
+      statusMessage.className =
+        `status-message ${type}`;
+
+    }
+
+    // IMAGE PREVIEW
+    imageUrlInput.addEventListener(
+      "input",
+      () => {
+
+        const url =
+          imageUrlInput.value.trim();
+
+        if (
+          isAllowedMarketplace(url)
+        ) {
+
+          previewImage.src = url;
+
+          preview.classList.remove(
+            "hidden"
+          );
+
+        } else {
+
+          preview.classList.add(
+            "hidden"
+          );
+
+        }
+
+      }
+    );
 
     // FORM SUBMIT
     listingForm.addEventListener(
@@ -483,7 +569,7 @@
         if (!currentUser) {
 
           showMessage(
-            "You must be logged in."
+            "Login required."
           );
 
           return;
@@ -517,11 +603,13 @@
 
         const imageUrl =
           document
-            .getElementById("imageUrl")
+            .getElementById(
+              "imageUrl"
+            )
             .value
             .trim();
 
-        // LINK VALIDATION
+        // VALIDATION
         if (
           !isAllowedMarketplace(
             externalLink
@@ -535,7 +623,6 @@
           return;
         }
 
-        // IMAGE VALIDATION
         if (
           !isAllowedMarketplace(
             imageUrl
@@ -543,46 +630,42 @@
         ) {
 
           showMessage(
-            "Image must come from Yaga, Osta or Vinted."
+            "Invalid image URL."
           );
 
           return;
         }
 
         submitBtn.disabled = true;
+
         submitBtn.textContent =
           "Publishing...";
 
         try {
 
-          // 24h CHECK
-          const last24h =
-            new Date(
-              Date.now() -
-              24 * 60 * 60 * 1000
+          // DAILY LIMIT
+          const now =
+            new Date();
+
+          const dailyDocId =
+            `${currentUser.uid}_${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`;
+
+          const dailyRef =
+            doc(
+              db,
+              "userDailyPosts",
+              dailyDocId
             );
 
-          const q = query(
-            collection(db, "listings"),
-            where(
-              "sellerUid",
-              "==",
-              currentUser.uid
-            ),
-            where(
-              "createdAt",
-              ">=",
-              last24h
-            )
-          );
+          const dailySnap =
+            await getDoc(
+              dailyRef
+            );
 
-          const existing =
-            await getDocs(q);
-
-          if (!existing.empty) {
+          if (dailySnap.exists()) {
 
             showMessage(
-              "You can only post 1 listing every 24 hours."
+              "You already posted today."
             );
 
             submitBtn.disabled = false;
@@ -595,12 +678,16 @@
 
           // CREATE LISTING
           await addDoc(
-            collection(db, "listings"),
+            collection(
+              db,
+              "listings"
+            ),
             {
 
               title,
               productType,
               price,
+
               externalLink,
               imageUrl,
 
@@ -616,23 +703,17 @@
             }
           );
 
-          // DAILY TRACKING DOC
-          const now =
-            new Date();
-
-          const dailyDocId =
-            `${currentUser.uid}_${now.getFullYear()}_${now.getMonth()+1}_${now.getDate()}`;
-
+          // DAILY TRACKING
           await setDoc(
-            doc(
-              db,
-              "userDailyPosts",
-              dailyDocId
-            ),
+            dailyRef,
             {
-              uid: currentUser.uid,
+
+              uid:
+                currentUser.uid,
+
               createdAt:
                 serverTimestamp()
+
             }
           );
 
@@ -643,7 +724,7 @@
 
           listingForm.reset();
 
-          previewBox.classList.add(
+          preview.classList.add(
             "hidden"
           );
 
@@ -652,6 +733,7 @@
           console.error(error);
 
           showMessage(
+            error.message ||
             "Failed to publish listing."
           );
 
