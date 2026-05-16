@@ -1,0 +1,204 @@
+/* privacy-policy-style.css */
+
+:root{
+  --bg:#ffffff;
+  --text:#111111;
+  --text-light:#666666;
+  --border:#e5e7eb;
+  --blue:#79bcff;
+  --green:#8de2b3;
+  --red:#ffb0b0;
+  --shadow:0 10px 35px rgba(0,0,0,.06);
+  --radius:28px;
+  --transition:.3s ease;
+}
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
+
+body{
+  font-family:"Inter",sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  line-height:1.7;
+}
+
+a{
+  text-decoration:none;
+  color:inherit;
+}
+
+.container{
+  width:min(1000px, calc(100% - 40px));
+  margin:auto;
+}
+
+/* HEADER */
+
+.header{
+  position:sticky;
+  top:0;
+  z-index:999;
+  background:rgba(255,255,255,.92);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+
+.nav-container{
+  height:82px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.logo{
+  font-size:1.7rem;
+  font-weight:800;
+}
+
+.logo span{
+  color:var(--blue);
+}
+
+.nav{
+  display:flex;
+  gap:28px;
+}
+
+.nav a{
+  color:var(--text-light);
+  font-weight:600;
+  transition:var(--transition);
+}
+
+.nav a:hover{
+  color:var(--text);
+}
+
+/* PAGE */
+
+.page{
+  padding:60px 0;
+}
+
+.policy-card{
+  background:white;
+  border:1px solid var(--border);
+  border-radius:36px;
+  padding:50px;
+  box-shadow:var(--shadow);
+}
+
+.policy-top{
+  margin-bottom:50px;
+}
+
+.tag{
+  width:fit-content;
+  background:#f5f5f5;
+  border:1px solid var(--border);
+  padding:10px 16px;
+  border-radius:999px;
+  margin-bottom:20px;
+  font-weight:600;
+}
+
+.policy-top h1{
+  font-size:3.4rem;
+  margin-bottom:12px;
+}
+
+.policy-top p{
+  color:var(--text-light);
+}
+
+/* SECTIONS */
+
+.policy-section{
+  margin-bottom:42px;
+}
+
+.policy-section:last-child{
+  margin-bottom:0;
+}
+
+.policy-section h2{
+  font-size:1.5rem;
+  margin-bottom:18px;
+}
+
+.policy-section p{
+  margin-bottom:16px;
+  color:#222222;
+}
+
+.policy-section ul{
+  padding-left:22px;
+}
+
+.policy-section li{
+  margin-bottom:12px;
+}
+
+/* BOXES */
+
+.highlight-box{
+  margin-top:20px;
+  padding:22px;
+  border-radius:22px;
+  border:1px solid var(--border);
+}
+
+.highlight-box.green{
+  background:#f0fff5;
+}
+
+.highlight-box.red{
+  background:#fff2f2;
+}
+
+.email-box{
+  width:fit-content;
+  padding:16px 22px;
+  border-radius:18px;
+  background:#f8fafc;
+  border:1px solid var(--border);
+  font-weight:700;
+  margin:18px 0;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .policy-card{
+    padding:30px;
+    border-radius:26px;
+  }
+
+  .policy-top h1{
+    font-size:2.4rem;
+  }
+
+  .nav{
+    gap:18px;
+  }
+}
+
+@media(max-width:520px){
+
+  .nav{
+    display:none;
+  }
+
+  .policy-card{
+    padding:24px;
+  }
+
+  .policy-top h1{
+    font-size:2rem;
+  }
+}
