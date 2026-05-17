@@ -697,8 +697,6 @@ img {
     grid-template-columns: 1fr;
   }
 }
-/* DROP-IN CONTENT SECTIONS */
-/* ADD THIS AT THE VERY END OF YOUR EXISTING style.css */
 
 /* CONTENT SECTIONS */
 
@@ -714,8 +712,8 @@ img {
 .section-top h2 {
   font-size: clamp(2rem, 4vw, 3rem);
   line-height: 1.1;
-  margin-bottom: 18px;
   letter-spacing: -2px;
+  margin-bottom: 18px;
 }
 
 .section-top p {
@@ -724,22 +722,30 @@ img {
   font-size: 1.05rem;
 }
 
-/* CONTENT GRID */
+/* GRID LAYOUTS */
 
-.content-grid,
-.feature-list-large,
-.tips-grid {
+.content-grid {
   display: grid;
+  grid-template-columns: repeat(3, 1fr);
   gap: 24px;
 }
 
-.content-grid,
 .feature-list-large {
+  display: grid;
   grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
 }
 
 .tips-grid {
+  display: grid;
   grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 /* CARDS */
@@ -748,7 +754,8 @@ img {
 .feature-box,
 .tip-card,
 .faq-item {
-  background: #fafafa;
+
+  background-color: #fafafa;
 
   border: 1px solid var(--border);
 
@@ -756,7 +763,11 @@ img {
 
   padding: 32px;
 
+  box-shadow: var(--shadow);
+
   transition: var(--transition);
+
+  overflow: hidden;
 }
 
 .content-card:hover,
@@ -764,8 +775,9 @@ img {
 .tip-card:hover,
 .faq-item:hover {
   transform: translateY(-6px);
-  box-shadow: var(--shadow);
 }
+
+/* TITLES */
 
 .content-card h3,
 .feature-box h3,
@@ -773,22 +785,29 @@ img {
 .faq-item h3 {
   font-size: 1.3rem;
   margin-bottom: 14px;
+  color: var(--text);
 }
+
+/* PARAGRAPHS */
 
 .content-card p,
 .feature-box p,
 .tip-card p,
 .faq-item p {
+
   color: var(--text-light);
-  line-height: 1.7;
+
+  line-height: 1.8;
+
+  background: transparent;
+
+  margin: 0;
 }
 
-/* FAQ */
+/* FAQ STYLE */
 
-.faq-list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+.faq-item {
+  width: 100%;
 }
 
 /* MOBILE */
@@ -802,7 +821,7 @@ img {
   }
 
   .section-top {
-    margin-bottom: 36px;
+    margin-bottom: 40px;
   }
 }
 
