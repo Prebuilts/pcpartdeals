@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <meta charset="UTF-8" />
 
   <meta
@@ -11,107 +12,261 @@
 
   <title>Browse Deals | PCPartDeals</title>
 
-  <link rel="stylesheet" href="browse-style.css" />
+  <link
+    rel="stylesheet"
+    href="browse-style.css"
+  />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect"
+        href="https://fonts.googleapis.com">
+
+  <link rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin>
 
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5355726667828193"
-     crossorigin="anonymous"></script>
+
+  <!-- ADSENSE -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5355726667828193"
+    crossorigin="anonymous">
+  </script>
+
 </head>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-MY119JMX3S"></script>
+
+<!-- GOOGLE ANALYTICS -->
+<script async
+  src="https://www.googletagmanager.com/gtag/js?id=G-MY119JMX3S">
+</script>
+
 <script>
   window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
+
+  function gtag(){
+    dataLayer.push(arguments);
+  }
+
   gtag('js', new Date());
 
   gtag('config', 'G-MY119JMX3S');
 </script>
+
 <body>
 
   <!-- HEADER -->
   <header class="header">
+
     <div class="container nav-container">
 
-      <a href="index.html" class="logo">
+      <a href="https://pcpartdeals.eu/" class="logo">
         PC<span>PartDeals</span>
       </a>
 
       <nav class="nav" id="navMenu">
-        <a href="https://pcpartdeals.eu/">Home</a>
-        <a href="https://pcpartdeals.eu/browse" class="active">Browse</a>
-        <a href="https://pcpartdeals.eu/login">Login</a>
+
+        <a href="https://pcpartdeals.eu/">
+          Home
+        </a>
+
+        <a
+          href="https://pcpartdeals.eu/browse"
+          class="active"
+        >
+          Browse
+        </a>
+
+        <a href="https://pcpartdeals.eu/login">
+          Login
+        </a>
+
       </nav>
 
-      <button class="hamburger" id="hamburgerBtn">
+      <button
+        class="hamburger"
+        id="hamburgerBtn"
+      >
+
         <span></span>
         <span></span>
         <span></span>
+
       </button>
 
     </div>
+
   </header>
 
   <!-- HERO -->
   <section class="hero">
+
     <div class="container">
 
       <div class="hero-box">
-        <h1>Browse PC Deals</h1>
+
+        <h1>
+          Browse PC Deals
+        </h1>
+
         <p>
-          Search and compare listings from the community.
+          Search and compare listings from Yaga,
+          Osta and Vinted in one place.
         </p>
+
       </div>
 
     </div>
+
   </section>
 
   <!-- FILTERS -->
   <section class="filters">
+
     <div class="container">
 
       <div class="filter-grid">
 
+        <!-- SEARCH -->
         <input
           type="text"
           id="searchInput"
           placeholder="Search product (e.g. Ryzen 5 5500)"
         />
 
+        <!-- PRODUCT -->
         <select id="productFilter">
-          <option value="">All Products</option>
+
+          <option value="">
+            All Products
+          </option>
+
         </select>
 
+        <!-- MARKETPLACE -->
+        <select id="marketplaceFilter">
+
+          <option value="">
+            All Marketplaces
+          </option>
+
+          <option value="Yaga">
+            Yaga
+          </option>
+
+          <option value="Osta">
+            Osta
+          </option>
+
+          <option value="Vinted">
+            Vinted
+          </option>
+
+        </select>
+
+        <!-- CONDITION -->
+        <select id="conditionFilter">
+
+          <option value="">
+            All Conditions
+          </option>
+
+          <option value="New">
+            New
+          </option>
+
+          <option value="Like-New">
+            Like-New
+          </option>
+
+          <option value="Used">
+            Used
+          </option>
+
+          <option value="Satisfactory">
+            Satisfactory
+          </option>
+
+          <option value="Does Not Work (Tested)">
+            Does Not Work (Tested)
+          </option>
+
+          <option value="Does Not Work (Untested)">
+            Does Not Work (Untested)
+          </option>
+
+        </select>
+
+        <!-- SHIPPING -->
+        <select id="shippingFilter">
+
+          <option value="">
+            Shipping Options
+          </option>
+
+          <option value="free">
+            Free Shipping
+          </option>
+
+          <option value="paid">
+            Paid Shipping
+          </option>
+
+        </select>
+
+        <!-- SORT -->
         <select id="sortPrice">
-          <option value="">Sort by price</option>
-          <option value="asc">Lowest first</option>
-          <option value="desc">Highest first</option>
+
+          <option value="">
+            Sort by price
+          </option>
+
+          <option value="asc">
+            Lowest first
+          </option>
+
+          <option value="desc">
+            Highest first
+          </option>
+
+          <option value="totalAsc">
+            Lowest total price
+          </option>
+
+          <option value="totalDesc">
+            Highest total price
+          </option>
+
         </select>
 
       </div>
 
     </div>
+
   </section>
 
   <!-- LISTINGS -->
   <section class="listings">
+
     <div class="container">
 
-      <div id="listingGrid" class="listing-grid">
+      <div
+        id="listingGrid"
+        class="listing-grid"
+      >
+
         <div class="loading">
           Loading listings...
         </div>
+
       </div>
 
     </div>
+
   </section>
 
-
+  <!-- FIREBASE -->
   <script type="module">
 
     import { initializeApp }
@@ -126,28 +281,7 @@
     }
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
-
-    /*
-      REQUIRED FIRESTORE COLLECTION STRUCTURE:
-
-      listings/
-        autoId
-          title: "Ryzen 5 5500"
-          price: 69
-          imageUrl: "https://..."
-          externalLink: "https://www.yaga.ee/..."
-          sellerUid: "uid"
-          createdAt: serverTimestamp()
-          productType: "Ryzen 5 5500"
-
-      IMPORTANT:
-      create listing page later should validate:
-      - only 1 listing/day per uid
-      - only yaga.ee / osta.ee / vinted.com links
-      - image URL must be from allowed domains too
-    */
-
-
+    // FIREBASE CONFIG
     const firebaseConfig = {
       apiKey: "AIzaSyB9SrAC073Fhn3Z_2vZpqlX25HLIGFuB9A",
       authDomain: "pcpartdealseu.firebaseapp.com",
@@ -158,34 +292,74 @@
       measurementId: "G-FPQ8YQ9EM0"
     };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+    // INIT
+    const app =
+      initializeApp(firebaseConfig);
 
+    const db =
+      getFirestore(app);
+
+    // ELEMENTS
     const listingGrid =
-      document.getElementById("listingGrid");
+      document.getElementById(
+        "listingGrid"
+      );
 
     const searchInput =
-      document.getElementById("searchInput");
+      document.getElementById(
+        "searchInput"
+      );
 
     const productFilter =
-      document.getElementById("productFilter");
+      document.getElementById(
+        "productFilter"
+      );
+
+    const marketplaceFilter =
+      document.getElementById(
+        "marketplaceFilter"
+      );
+
+    const conditionFilter =
+      document.getElementById(
+        "conditionFilter"
+      );
+
+    const shippingFilter =
+      document.getElementById(
+        "shippingFilter"
+      );
 
     const sortPrice =
-      document.getElementById("sortPrice");
+      document.getElementById(
+        "sortPrice"
+      );
 
     let allListings = [];
 
+    // ESCAPE HTML
     function escapeHtml(text) {
-      const div = document.createElement("div");
+
+      const div =
+        document.createElement("div");
+
       div.textContent = text;
+
       return div.innerHTML;
+
     }
 
+    // RENDER
     function renderListings(data) {
 
       if (!data.length) {
-        listingGrid.innerHTML =
-          `<div class="loading">No listings found.</div>`;
+
+        listingGrid.innerHTML = `
+          <div class="loading">
+            No listings found.
+          </div>
+        `;
+
         return;
       }
 
@@ -193,10 +367,21 @@
 
       data.forEach(item => {
 
-        const card = document.createElement("div");
-        card.className = "listing-card";
+        const totalPrice =
+          (
+            Number(item.price || 0)
+            +
+            Number(item.shippingPrice || 0)
+          ).toFixed(2);
+
+        const card =
+          document.createElement("div");
+
+        card.className =
+          "listing-card";
 
         card.innerHTML = `
+
           <img
             src="${item.imageUrl}"
             alt="${escapeHtml(item.title)}"
@@ -205,8 +390,40 @@
           >
 
           <div class="listing-content">
-            <h3>${escapeHtml(item.title)}</h3>
-            <p class="price">€${item.price}</p>
+
+            <div class="listing-tags">
+
+              <span class="listing-badge">
+                ${escapeHtml(item.marketplace || "Marketplace")}
+              </span>
+
+              <span class="listing-badge condition">
+                ${escapeHtml(item.condition || "Unknown")}
+              </span>
+
+            </div>
+
+            <h3>
+              ${escapeHtml(item.title)}
+            </h3>
+
+            <div class="price-group">
+
+              <p class="price">
+                €${Number(item.price).toFixed(2)}
+              </p>
+
+              <p class="shipping-price">
+                Shipping:
+                €${Number(item.shippingPrice || 0).toFixed(2)}
+              </p>
+
+              <p class="total-price">
+                Total:
+                €${totalPrice}
+              </p>
+
+            </div>
 
             <a
               href="${item.externalLink}"
@@ -216,6 +433,7 @@
             >
               View Listing
             </a>
+
           </div>
         `;
 
@@ -225,88 +443,221 @@
 
     }
 
+    // FILTERS
     function applyFilters() {
 
-      let filtered = [...allListings];
+      let filtered =
+        [...allListings];
 
       const search =
-        searchInput.value.toLowerCase();
+        searchInput.value
+          .toLowerCase();
 
       const product =
         productFilter.value;
 
+      const marketplace =
+        marketplaceFilter.value;
+
+      const condition =
+        conditionFilter.value;
+
+      const shipping =
+        shippingFilter.value;
+
       const sort =
         sortPrice.value;
 
+      // SEARCH
       if (search) {
-        filtered = filtered.filter(x =>
-          x.title.toLowerCase().includes(search)
-        );
+
+        filtered =
+          filtered.filter(x =>
+
+            x.title
+              ?.toLowerCase()
+              .includes(search)
+
+          );
+
       }
 
+      // PRODUCT
       if (product) {
-        filtered = filtered.filter(x =>
-          x.productType === product
-        );
+
+        filtered =
+          filtered.filter(x =>
+
+            x.productType === product
+
+          );
+
       }
 
+      // MARKETPLACE
+      if (marketplace) {
+
+        filtered =
+          filtered.filter(x =>
+
+            x.marketplace === marketplace
+
+          );
+
+      }
+
+      // CONDITION
+      if (condition) {
+
+        filtered =
+          filtered.filter(x =>
+
+            x.condition === condition
+
+          );
+
+      }
+
+      // SHIPPING
+      if (shipping === "free") {
+
+        filtered =
+          filtered.filter(x =>
+
+            Number(x.shippingPrice || 0) === 0
+
+          );
+
+      }
+
+      if (shipping === "paid") {
+
+        filtered =
+          filtered.filter(x =>
+
+            Number(x.shippingPrice || 0) > 0
+
+          );
+
+      }
+
+      // SORTING
       if (sort === "asc") {
-        filtered.sort((a,b)=>a.price-b.price);
+
+        filtered.sort(
+          (a,b)=>
+            a.price - b.price
+        );
+
       }
 
       if (sort === "desc") {
-        filtered.sort((a,b)=>b.price-a.price);
+
+        filtered.sort(
+          (a,b)=>
+            b.price - a.price
+        );
+
+      }
+
+      if (sort === "totalAsc") {
+
+        filtered.sort(
+          (a,b)=>
+
+            (a.price + (a.shippingPrice || 0))
+            -
+            (b.price + (b.shippingPrice || 0))
+
+        );
+
+      }
+
+      if (sort === "totalDesc") {
+
+        filtered.sort(
+          (a,b)=>
+
+            (b.price + (b.shippingPrice || 0))
+            -
+            (a.price + (a.shippingPrice || 0))
+
+        );
+
       }
 
       renderListings(filtered);
+
     }
 
+    // LOAD LISTINGS
     async function loadListings() {
 
       try {
 
-        const q = query(
-          collection(db, "listings"),
-          orderBy("createdAt", "desc")
-        );
+        const q =
+          query(
+            collection(db, "listings"),
+            orderBy("createdAt", "desc")
+          );
 
-        const snap = await getDocs(q);
+        const snap =
+          await getDocs(q);
 
-        allListings = snap.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
+        allListings =
+          snap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
 
+        // PRODUCT FILTER
         const uniqueProducts =
-          [...new Set(
-            allListings.map(x => x.productType)
-          )];
+          [
+            ...new Set(
+              allListings.map(
+                x => x.productType
+              )
+            )
+          ];
 
         uniqueProducts.forEach(product => {
 
+          if (!product) return;
+
           const option =
-            document.createElement("option");
+            document.createElement(
+              "option"
+            );
 
-          option.value = product;
-          option.textContent = product;
+          option.value =
+            product;
 
-          productFilter.appendChild(option);
+          option.textContent =
+            product;
+
+          productFilter.appendChild(
+            option
+          );
 
         });
 
         renderListings(allListings);
 
       } catch (e) {
+
         console.error(e);
 
-        listingGrid.innerHTML =
-          `<div class="loading">
+        listingGrid.innerHTML = `
+          <div class="loading">
             Failed loading listings.
-          </div>`;
+          </div>
+        `;
+
       }
 
     }
 
+    // EVENTS
     searchInput.addEventListener(
       "input",
       applyFilters
@@ -317,25 +668,52 @@
       applyFilters
     );
 
+    marketplaceFilter.addEventListener(
+      "change",
+      applyFilters
+    );
+
+    conditionFilter.addEventListener(
+      "change",
+      applyFilters
+    );
+
+    shippingFilter.addEventListener(
+      "change",
+      applyFilters
+    );
+
     sortPrice.addEventListener(
       "change",
       applyFilters
     );
 
+    // LOAD
     loadListings();
 
-    // mobile menu
+    // MOBILE MENU
     const hamburgerBtn =
-      document.getElementById("hamburgerBtn");
+      document.getElementById(
+        "hamburgerBtn"
+      );
 
     const navMenu =
-      document.getElementById("navMenu");
+      document.getElementById(
+        "navMenu"
+      );
 
     hamburgerBtn.addEventListener(
       "click",
       ()=> {
-        navMenu.classList.toggle("active");
-        hamburgerBtn.classList.toggle("active");
+
+        navMenu.classList.toggle(
+          "active"
+        );
+
+        hamburgerBtn.classList.toggle(
+          "active"
+        );
+
       }
     );
 
