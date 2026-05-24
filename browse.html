@@ -111,7 +111,7 @@
         </h1>
 
         <p>
-          Search and compare listings from Kleinanzeigen, Vinted, Leboncoin, Wallapop, Yaga and 
+          Search and compare listings from Kleinanzeigen, Vinted, Leboncoin, Wallapop, Yaga and
           Osta in one place.
         </p>
 
@@ -128,14 +128,12 @@
 
       <div class="filter-grid">
 
-        <!-- SEARCH -->
         <input
           type="text"
           id="searchInput"
           placeholder="Search product (e.g. Ryzen 5 5500)"
         />
 
-        <!-- PRODUCT -->
         <select id="productFilter">
 
           <option value="">
@@ -144,7 +142,6 @@
 
         </select>
 
-        <!-- MARKETPLACE -->
         <select id="marketplaceFilter">
 
           <option value="">
@@ -177,7 +174,6 @@
 
         </select>
 
-        <!-- CONDITION -->
         <select id="conditionFilter">
 
           <option value="">
@@ -210,7 +206,6 @@
 
         </select>
 
-        <!-- SHIPPING -->
         <select id="shippingFilter">
 
           <option value="">
@@ -227,7 +222,6 @@
 
         </select>
 
-        <!-- SORT -->
         <select id="sortPrice">
 
           <option value="">
@@ -386,6 +380,15 @@
             Number(item.shippingPrice || 0)
           ).toFixed(2);
 
+        // USERNAME
+        const username =
+          item.username ||
+          "user";
+
+        // PROFILE URL
+        const profileUrl =
+          `https://pcpartdeals.eu/profile.html?user=${encodeURIComponent(username)}`;
+
         const card =
           document.createElement("div");
 
@@ -437,14 +440,25 @@
 
             </div>
 
-            <a
-              href="${item.externalLink}"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="view-btn"
-            >
-              View Listing
-            </a>
+            <div class="listing-actions">
+
+              <a
+                href="${item.externalLink}"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="view-btn"
+              >
+                View Listing
+              </a>
+
+              <a
+                href="${profileUrl}"
+                class="profile-btn"
+              >
+                View Seller
+              </a>
+
+            </div>
 
           </div>
         `;
@@ -480,7 +494,6 @@
       const sort =
         sortPrice.value;
 
-      // SEARCH
       if (search) {
 
         filtered =
@@ -494,7 +507,6 @@
 
       }
 
-      // PRODUCT
       if (product) {
 
         filtered =
@@ -506,7 +518,6 @@
 
       }
 
-      // MARKETPLACE
       if (marketplace) {
 
         filtered =
@@ -518,7 +529,6 @@
 
       }
 
-      // CONDITION
       if (condition) {
 
         filtered =
@@ -530,7 +540,6 @@
 
       }
 
-      // SHIPPING
       if (shipping === "free") {
 
         filtered =
@@ -553,7 +562,6 @@
 
       }
 
-      // SORTING
       if (sort === "asc") {
 
         filtered.sort(
@@ -622,7 +630,6 @@
             ...doc.data()
           }));
 
-        // PRODUCT FILTER
         const uniqueProducts =
           [
             ...new Set(
@@ -730,6 +737,13 @@
     );
 
   </script>
-  <script src="https://cdn.apitiny.net/scripts/v2.0/main.js" data-site-id="6a0f042d4b9c17c44c003e8c" data-test-mode="false" async></script>
+
+  <script
+    src="https://cdn.apitiny.net/scripts/v2.0/main.js"
+    data-site-id="6a0f042d4b9c17c44c003e8c"
+    data-test-mode="false"
+    async>
+  </script>
+
 </body>
 </html>
