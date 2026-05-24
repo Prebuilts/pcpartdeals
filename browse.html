@@ -346,6 +346,8 @@
     // ESCAPE HTML
     function escapeHtml(text) {
 
+      if (!text) return "";
+
       const div =
         document.createElement("div");
 
@@ -380,12 +382,12 @@
             Number(item.shippingPrice || 0)
           ).toFixed(2);
 
-        // USERNAME
+        // FIXED USERNAME SUPPORT
         const username =
+          item.sellerUsername ||
           item.username ||
           "user";
 
-        // PROFILE URL
         const profileUrl =
           `https://pcpartdeals.eu/profile.html?user=${encodeURIComponent(username)}`;
 
@@ -425,7 +427,7 @@
             <div class="price-group">
 
               <p class="price">
-                €${Number(item.price).toFixed(2)}
+                €${Number(item.price || 0).toFixed(2)}
               </p>
 
               <p class="shipping-price">
@@ -494,6 +496,7 @@
       const sort =
         sortPrice.value;
 
+      // SEARCH
       if (search) {
 
         filtered =
@@ -507,6 +510,7 @@
 
       }
 
+      // PRODUCT
       if (product) {
 
         filtered =
@@ -518,6 +522,7 @@
 
       }
 
+      // MARKETPLACE
       if (marketplace) {
 
         filtered =
@@ -529,6 +534,7 @@
 
       }
 
+      // CONDITION
       if (condition) {
 
         filtered =
@@ -540,6 +546,7 @@
 
       }
 
+      // SHIPPING
       if (shipping === "free") {
 
         filtered =
@@ -562,6 +569,7 @@
 
       }
 
+      // SORTING
       if (sort === "asc") {
 
         filtered.sort(
@@ -630,6 +638,7 @@
             ...doc.data()
           }));
 
+        // PRODUCT FILTER
         const uniqueProducts =
           [
             ...new Set(
