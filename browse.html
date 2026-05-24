@@ -632,11 +632,38 @@
         const snap =
           await getDocs(q);
 
-        allListings =
-          snap.docs.map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          }));
+        // 45 DAYS IN MILLISECONDS
+const EXPIRATION_TIME =
+  45 * 24 * 60 * 60 * 1000;
+
+const now =
+  Date.now();
+
+allListings =
+  snap.docs
+    .map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }))
+    .filter(item => {
+
+      // hide listings without timestamp
+      if (!item.createdAt) {
+        return false;
+      }
+
+      // firestore timestamp -> milliseconds
+      const createdTime =
+        item.createdAt.toDate().getTime();
+
+      // calculate age
+      const age =
+        now - createdTime;
+
+      // keep only non-expired listings
+      return age < EXPIRATION_TIME;
+
+    });
 
         // PRODUCT FILTER
         const uniqueProducts =
