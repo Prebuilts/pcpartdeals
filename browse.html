@@ -283,9 +283,17 @@
       collection,
       getDocs,
       query,
-      orderBy
+      orderBy,
+      addDoc,
+      serverTimestamp
     }
     from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+
+    import {
+      getAuth,
+      onAuthStateChanged
+    }
+    from "https://www.gstatic.com/firebasejs/12.13.0/firebase-auth.js";
 
     // FIREBASE CONFIG
     const firebaseConfig = {
@@ -304,6 +312,20 @@
 
     const db =
       getFirestore(app);
+
+    const auth =
+      getAuth(app);
+
+    let currentUser = null;
+
+    onAuthStateChanged(
+      auth,
+      (user) => {
+
+        currentUser = user;
+
+      }
+    );
 
     // ELEMENTS
     const listingGrid =
@@ -357,6 +379,109 @@
 
     }
 
+    // CAPTCHA
+    function generateCaptcha() {
+
+      const chars =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+      let result = "";
+
+      for (let i = 0; i < 5; i++) {
+
+        result +=
+          chars.charAt(
+            Math.floor(
+              Math.random() * chars.length
+            )
+          );
+
+      }
+
+      return result;
+
+    }
+
+    // REPORT
+    async function reportListing(listingId) {
+
+      if (!currentUser) {
+
+        alert(
+          "You must be logged in to report listings."
+        );
+
+        window.location.href =
+          "https://pcpartdeals.eu/login";
+
+        return;
+
+      }
+
+      const confirmed =
+        confirm(
+          "Are you sure you want to report this listing?"
+        );
+
+      if (!confirmed) {
+        return;
+      }
+
+      const captcha =
+        generateCaptcha();
+
+      const input =
+        prompt(
+          `Type this text to confirm:\n\n${captcha}`
+        );
+
+      if (
+        !input ||
+        input.trim().toUpperCase()
+        !== captcha
+      ) {
+
+        alert(
+          "Verification failed."
+        );
+
+        return;
+
+      }
+
+      try {
+
+        await addDoc(
+          collection(db, "reports"),
+          {
+
+            listingId,
+
+            reporterUid:
+              currentUser.uid,
+
+            createdAt:
+              serverTimestamp()
+
+          }
+        );
+
+        alert(
+          "Report submitted."
+        );
+
+      } catch (e) {
+
+        console.error(e);
+
+        alert(
+          "Failed to submit report."
+        );
+
+      }
+
+    }
+
     // RENDER
     function renderListings(data) {
 
@@ -382,7 +507,6 @@
             Number(item.shippingPrice || 0)
           ).toFixed(2);
 
-        // FIXED USERNAME SUPPORT
         const username =
           item.sellerUsername ||
           item.username ||
@@ -460,6 +584,13 @@
                 View Seller
               </a>
 
+              <button
+                class="report-btn"
+                data-id="${item.id}"
+              >
+                Report
+              </button>
+
             </div>
 
           </div>
@@ -468,6 +599,24 @@
         listingGrid.appendChild(card);
 
       });
+
+      // REPORT BUTTON EVENTS
+      document
+        .querySelectorAll(".report-btn")
+        .forEach(btn => {
+
+          btn.addEventListener(
+            "click",
+            () => {
+
+              reportListing(
+                btn.dataset.id
+              );
+
+            }
+          );
+
+        });
 
     }
 
@@ -632,38 +781,36 @@
         const snap =
           await getDocs(q);
 
-        // 45 DAYS IN MILLISECONDS
-const EXPIRATION_TIME =
-  45 * 24 * 60 * 60 * 1000;
+        // 45 DAYS
+        const EXPIRATION_TIME =
+          45 * 24 * 60 * 60 * 1000;
 
-const now =
-  Date.now();
+        const now =
+          Date.now();
 
-allListings =
-  snap.docs
-    .map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }))
-    .filter(item => {
+        allListings =
+          snap.docs
+            .map(doc => ({
+              id: doc.id,
+              ...doc.data()
+            }))
+            .filter(item => {
 
-      // hide listings without timestamp
-      if (!item.createdAt) {
-        return false;
-      }
+              if (!item.createdAt) {
+                return false;
+              }
 
-      // firestore timestamp -> milliseconds
-      const createdTime =
-        item.createdAt.toDate().getTime();
+              const createdTime =
+                item.createdAt
+                  .toDate()
+                  .getTime();
 
-      // calculate age
-      const age =
-        now - createdTime;
+              const age =
+                now - createdTime;
 
-      // keep only non-expired listings
-      return age < EXPIRATION_TIME;
+              return age < EXPIRATION_TIME;
 
-    });
+            });
 
         // PRODUCT FILTER
         const uniqueProducts =
