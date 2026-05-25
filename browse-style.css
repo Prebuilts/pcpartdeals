@@ -244,3 +244,18 @@ select:focus{
     font-size:2.2rem;
   }
 }
+/* AD CARD */
+.ad-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+}
+
+.ad-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+}
