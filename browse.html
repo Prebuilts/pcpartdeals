@@ -482,8 +482,44 @@
 
     }
 
-    // RENDER
-    // RENDER
+    // AFFILIATE ADS
+const affiliateAds = [
+
+  {
+    title: "RTX 4070 Gaming PC",
+    description: "High-end gaming PC with RTX graphics and fast shipping.",
+    image: "https://example.com/pc-image.jpg",
+    link: "https://affiliate-link.com/product1"
+  },
+
+  {
+    title: "Ryzen 7 CPU Deal",
+    description: "Save on Ryzen processors this week.",
+    image: "https://example.com/cpu-image.jpg",
+    link: "https://affiliate-link.com/product2"
+  }
+
+];
+
+// RANDOM AFFILIATE
+function getRandomAffiliate() {
+
+  return affiliateAds[
+    Math.floor(
+      Math.random() * affiliateAds.length
+    )
+  ];
+
+}
+
+// 25% CHANCE
+function shouldShowAffiliate() {
+
+  return Math.random() < 0.25;
+
+}
+
+// RENDER
 function renderListings(data) {
 
   if (!data.length) {
@@ -599,7 +635,7 @@ function renderListings(data) {
 
     listingGrid.appendChild(card);
 
-    // ADD AD EVERY 5 LISTINGS
+    // AD EVERY 5 LISTINGS
     if ((index + 1) % 5 === 0) {
 
       const adCard =
@@ -608,13 +644,67 @@ function renderListings(data) {
       adCard.className =
         "listing-card ad-card";
 
-      adCard.innerHTML = `
-        <div class="listing-content ad-content">
+      // SHOW AFFILIATE 25% OF TIME
+      if (
+        affiliateAds.length > 0 &&
+        shouldShowAffiliate()
+      ) {
 
-          <div ta-ad-container=""></div>
+        const affiliate =
+          getRandomAffiliate();
 
-        </div>
-      `;
+        adCard.innerHTML = `
+
+          <a
+            href="${affiliate.link}"
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            class="affiliate-ad"
+          >
+
+            <img
+              src="${affiliate.image}"
+              alt="${escapeHtml(affiliate.title)}"
+              class="affiliate-image"
+              loading="lazy"
+            >
+
+            <div class="affiliate-content">
+
+              <span class="affiliate-label">
+                Sponsored
+              </span>
+
+              <h3>
+                ${escapeHtml(affiliate.title)}
+              </h3>
+
+              <p>
+                ${escapeHtml(affiliate.description)}
+              </p>
+
+              <div class="affiliate-disclaimer">
+                This ad may contain affiliate links.
+              </div>
+
+            </div>
+
+          </a>
+
+        `;
+
+      } else {
+
+        // TINYADZ FALLBACK
+        adCard.innerHTML = `
+          <div class="listing-content ad-content">
+
+            <div ta-ad-container=""></div>
+
+          </div>
+        `;
+
+      }
 
       listingGrid.appendChild(adCard);
 
