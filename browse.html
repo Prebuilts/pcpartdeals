@@ -662,117 +662,118 @@ function renderListings(data) {
       </div>
     `;
 
-    listingGrid.appendChild(card);
-  }
-  // AD EVERY 5 LISTINGS
-if ((index + 1) % 5 === 0) {
+        listingGrid.appendChild(card);
 
-  const adCard =
-    document.createElement("div");
+    // AD EVERY 5 LISTINGS
+    if ((index + 1) % 5 === 0) {
 
-  adCard.className =
-    "listing-card ad-card";
+      const adCard =
+        document.createElement("div");
 
-  // RENDER AFFILIATE
-  function renderAffiliateAd() {
+      adCard.className =
+        "listing-card ad-card";
 
-    const affiliate =
-      getRandomAffiliate();
+      // RENDER AFFILIATE
+      function renderAffiliateAd() {
 
-    adCard.innerHTML = `
+        const affiliate =
+          getRandomAffiliate();
 
-      <a
-        href="${affiliate.link}"
-        target="_blank"
-        rel="nofollow sponsored noopener noreferrer"
-        class="affiliate-ad"
-      >
+        adCard.innerHTML = `
 
-        <img
-          src="${affiliate.image}"
-          alt="${escapeHtml(affiliate.title)}"
-          class="affiliate-image"
-          loading="lazy"
-        >
+          <a
+            href="${affiliate.link}"
+            target="_blank"
+            rel="nofollow sponsored noopener noreferrer"
+            class="affiliate-ad"
+          >
 
-        <div class="affiliate-content">
+            <img
+              src="${affiliate.image}"
+              alt="${escapeHtml(affiliate.title)}"
+              class="affiliate-image"
+              loading="lazy"
+            >
 
-          <span class="affiliate-label">
-            Sponsored
-          </span>
+            <div class="affiliate-content">
 
-          <h3>
-            ${escapeHtml(affiliate.title)}
-          </h3>
+              <span class="affiliate-label">
+                Sponsored
+              </span>
 
-          <p>
-            ${escapeHtml(affiliate.description)}
-          </p>
+              <h3>
+                ${escapeHtml(affiliate.title)}
+              </h3>
 
-          <div class="affiliate-disclaimer">
-            As an Amazon Associate I earn from qualifying purchases.
-          </div>
+              <p>
+                ${escapeHtml(affiliate.description)}
+              </p>
 
-        </div>
+              <div class="affiliate-disclaimer">
+                As an Amazon Associate I earn from qualifying purchases.
+              </div>
 
-      </a>
+            </div>
 
-    `;
+          </a>
 
-  }
-
-  // 25% DIRECT AFFILIATE CHANCE
-  if (
-    affiliateAds.length > 0 &&
-    shouldShowAffiliate()
-  ) {
-
-    renderAffiliateAd();
-
-  } else {
-
-    // SHOW NORMAL AD
-    adCard.innerHTML = `
-      <div class="listing-content ad-content">
-
-        <div class="tinyadz-container" ta-ad-container=""></div>
-
-      </div>
-    `;
-
-  }
-
-  // APPEND FIRST
-  listingGrid.appendChild(adCard);
-
-  // CHECK FOR BLOCKED ADS
-  if (
-    !shouldShowAffiliate()
-  ) {
-
-    setTimeout(() => {
-
-      const adContainer =
-        adCard.querySelector(
-          ".tinyadz-container"
-        );
-
-      // IF BLOCKED / EMPTY
-      if (
-        !adContainer ||
-        adContainer.offsetHeight < 20 ||
-        adContainer.innerHTML.trim() === ""
-      ) {
-
-        renderAffiliateAd();
+        `;
 
       }
 
-    }, 2500);
+      // RANDOM 25% AFFILIATE
+      const useAffiliateDirectly =
+        affiliateAds.length > 0 &&
+        shouldShowAffiliate();
 
-  }
+      if (useAffiliateDirectly) {
 
-}
+        renderAffiliateAd();
+
+      } else {
+
+        // NORMAL AD NETWORK AD
+        adCard.innerHTML = `
+          <div class="listing-content ad-content">
+
+            <div
+              class="tinyadz-container"
+              ta-ad-container=""
+            ></div>
+
+          </div>
+        `;
+
+      }
+
+      listingGrid.appendChild(adCard);
+
+      // FALLBACK IF ADBLOCK HIDES AD
+      if (!useAffiliateDirectly) {
+
+        setTimeout(() => {
+
+          const adContainer =
+            adCard.querySelector(
+              ".tinyadz-container"
+            );
+
+          const blocked =
+            !adContainer ||
+            adContainer.offsetHeight < 20 ||
+            adContainer.innerHTML.trim() === "";
+
+          if (blocked) {
+
+            renderAffiliateAd();
+
+          }
+
+        }, 2500);
+
+      }
+
+    }
 
   // REPORT BUTTON EVENTS
   document
