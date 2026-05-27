@@ -663,8 +663,8 @@ function renderListings(data) {
     `;
 
     listingGrid.appendChild(card);
-
-    // AD EVERY 5 LISTINGS
+  }
+  // AD EVERY 5 LISTINGS
 if ((index + 1) % 5 === 0) {
 
   const adCard =
@@ -721,7 +721,7 @@ if ((index + 1) % 5 === 0) {
 
   }
 
-  // NORMAL 25% AFFILIATE CHANCE
+  // 25% DIRECT AFFILIATE CHANCE
   if (
     affiliateAds.length > 0 &&
     shouldShowAffiliate()
@@ -731,7 +731,7 @@ if ((index + 1) % 5 === 0) {
 
   } else {
 
-    // TRY NORMAL AD NETWORK
+    // SHOW NORMAL AD
     adCard.innerHTML = `
       <div class="listing-content ad-content">
 
@@ -740,7 +740,16 @@ if ((index + 1) % 5 === 0) {
       </div>
     `;
 
-    // ADBLOCK DETECTION
+  }
+
+  // APPEND FIRST
+  listingGrid.appendChild(adCard);
+
+  // CHECK FOR BLOCKED ADS
+  if (
+    !shouldShowAffiliate()
+  ) {
+
     setTimeout(() => {
 
       const adContainer =
@@ -748,7 +757,7 @@ if ((index + 1) % 5 === 0) {
           ".tinyadz-container"
         );
 
-      // IF BLOCKED OR EMPTY
+      // IF BLOCKED / EMPTY
       if (
         !adContainer ||
         adContainer.offsetHeight < 20 ||
@@ -762,8 +771,6 @@ if ((index + 1) % 5 === 0) {
     }, 2500);
 
   }
-
-  listingGrid.appendChild(adCard);
 
 }
 
