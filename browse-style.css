@@ -310,3 +310,91 @@ select:focus{
 .ad-card {
   overflow: hidden;
 }
+/* FOOTER */
+.site-footer {
+
+  margin-top: 60px;
+  background: #111827;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 40px 20px 20px;
+
+}
+
+.footer-container {
+
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+
+}
+
+.footer-logo {
+
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 10px;
+
+}
+
+.footer-logo span {
+
+  color: #60a5fa;
+
+}
+
+.footer-text {
+
+  color: #9ca3af;
+  max-width: 420px;
+  line-height: 1.6;
+
+}
+
+.footer-right {
+
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+
+}
+
+.footer-right a {
+
+  color: #d1d5db;
+  text-decoration: none;
+  transition: 0.2s;
+
+}
+
+.footer-right a:hover {
+
+  color: white;
+
+}
+
+.affiliate-footer-disclaimer {
+
+  margin-top: 30px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+
+  text-align: center;
+
+  font-size: 0.9rem;
+  color: #9ca3af;
+
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  .footer-container {
+
+    flex-direction: column;
+
+  }
+
+}
