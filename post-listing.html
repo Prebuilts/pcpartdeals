@@ -635,6 +635,79 @@
       }
 
     }
+    // BLOCK URLS IN TITLES
+function containsUrl(text) {
+
+  const urlPattern =
+    /(https?:\/\/|www\.|\.com|\.net|\.ee|\.de|\.fr|\.ru|discord\.gg|t\.me)/i;
+
+  return urlPattern.test(text);
+
+}
+
+// BLOCK INAPPROPRIATE WORDS
+function containsBadWords(text) {
+
+  const bannedWords = [
+
+    // SCAMS
+    "telegram",
+    "whatsapp",
+    "crypto",
+    "bitcoin",
+    "robux",
+    "vbucks",
+    "etherium",
+    "monero",
+    "discord nitro",
+    "paypal",
+    "cashapp",
+    "amazon",
+    "snapchat",
+    "tiktok",
+    "youtube",
+
+    // NSFW
+    "porn",
+    "sex",
+    "nude",
+    "rule34",
+    "dick",
+    "boobs",
+    "furry",
+    "fuck",
+
+    // HARASSMENT
+    "nigger",
+    "faggot",
+    "retard",
+    "nigga",
+    "idiot",
+    "asshole",
+    "shit",
+
+    // SPAM
+    "free money",
+    "click here",
+    "discord",
+    "please",
+    "casino",
+    "gambling",
+    "skibidi",
+    "roblox",
+    "twitter",
+    "facebook"
+
+  ];
+
+  const lower =
+    text.toLowerCase();
+
+  return bannedWords.some(word =>
+    lower.includes(word)
+  );
+
+}
 
     // STATUS
     function showMessage(
@@ -700,7 +773,46 @@
             .getElementById("title")
             .value
             .trim();
+        // TITLE VALIDATION
+if (containsUrl(title)) {
 
+  showMessage(
+    "URLs are not allowed in titles."
+  );
+
+  return;
+
+}
+
+if (containsBadWords(title)) {
+
+  showMessage(
+    "Inappropriate words are not allowed."
+  );
+
+  return;
+
+}
+        // NO EXCESSIVE SYMBOLS
+if (/[@#$%^*{}[\]|\\<>]/.test(title)) {
+
+  showMessage(
+    "Title contains invalid characters."
+  );
+
+  return;
+
+}
+        // NO REPEATED CHARACTERS
+if (/(.)\1{5,}/.test(title)) {
+
+  showMessage(
+    "Spam-like title detected."
+  );
+
+  return;
+
+}
         const productType =
           document
             .getElementById("productType")
