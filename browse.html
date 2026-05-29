@@ -618,17 +618,51 @@ function renderListings(data) {
 card.className =
   "listing-card";
 
-// CHECK LISTING STATUS
-const listingStatus =
-  await checkListingStatus(
-    item.externalLink
-  );
+// CHECK IF LISTING URL LOOKS DEAD
+async function checkListingStatus(url) {
 
-if (!listingStatus.valid) {
+  // DEFAULT:
+  // Assume valid because most marketplaces
+  // block browser-side checks
 
-  card.classList.add(
-    "listing-dead"
-  );
+  let result = {
+    valid: true,
+    sold: false
+  };
+
+  try {
+
+    // ONLY TEST BASIC URL FORMAT
+    const parsed =
+      new URL(url);
+
+    // INVALID IF NO HOSTNAME
+    if (!parsed.hostname) {
+
+      result.valid = false;
+
+    }
+
+    // OPTIONAL:
+    // Mark suspicious URLs
+
+    if (
+      url.includes("undefined") ||
+      url.includes("null") ||
+      url.length < 15
+    ) {
+
+      result.valid = false;
+
+    }
+
+  } catch (e) {
+
+    result.valid = false;
+
+  }
+
+  return result;
 
 }
 
