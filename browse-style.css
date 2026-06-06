@@ -407,3 +407,34 @@ select:focus{
   pointer-events: none;
   opacity: 0.7;
 }
+.alert-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.alert-controls {
+  display: flex;
+  gap: 10px;
+}
+
+.alert-controls input {
+  flex: 1;
+}
+
+.keyword-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #f3f4f6;
+  padding: 8px 12px;
+  border-radius: 999px;
+  margin: 6px;
+}
+
+.keyword-tag button {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
