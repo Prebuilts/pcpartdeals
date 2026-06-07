@@ -354,6 +354,7 @@
       doc,
       setDoc,
       getDoc,
+      updateDoc,
       collection,
       query,
       where,
@@ -436,6 +437,15 @@
         }
 
         currentUser = user;
+
+        // UPDATE LAST ACTIVE
+        await setDoc(
+          doc(db, "userSettings", user.uid),
+          {
+            lastActive: serverTimestamp()
+          },
+          { merge: true }
+        );
 
         authRequired.classList.add(
           "hidden"
@@ -759,14 +769,40 @@
                 €${data.price}
               </p>
 
+              <p class="listing-status">
+                Status:
+                <strong>
+                  ${data.sold ? "Sold" : "Active"}
+                </strong>
+              </p>
+
             </div>
 
             <button
-              class="delete-btn"
+              class="renew-btn"
               data-id="${docSnap.id}"
             >
-              Delete
+              Renew Listing
             </button>
+              
+            <div class="listing-buttons">
+            
+              <button
+                class="sold-btn"
+                data-id="${docSnap.id}"
+                data-sold="${data.sold ? 'true' : 'false'}"
+              >
+                ${data.sold ? "Mark Active" : "Mark Sold"}
+              </button>
+            
+              <button
+                class="delete-btn"
+                data-id="${docSnap.id}"
+              >
+                Delete
+              </button>
+            
+            </div>
 
           `;
 
@@ -774,6 +810,96 @@
 
         });
 
+        // SOLD BUTTONS
+        document
+          .querySelectorAll(".sold-btn")
+          .forEach((btn) => {
+        
+            btn.addEventListener(
+              "click",
+              async () => {
+        
+                try {
+        
+                  const listingRef =
+                    doc(
+                      db,
+                      "listings",
+                      btn.dataset.id
+                    );
+        
+                  const currentlySold =
+                    btn.dataset.sold === "true";
+        
+                  await updateDoc(
+                    listingRef,
+                    {
+                      sold: !currentlySold,
+                      soldAt: !currentlySold
+                        ? serverTimestamp()
+                        : null
+                    }
+                  );
+        
+                  loadPosts();
+        
+                } catch (error) {
+        
+                  console.error(error);
+        
+                  alert(
+                    "Failed updating listing."
+                  );
+        
+                }
+        
+              }
+            );
+        
+          });
+
+        // RENEW BUTTONS
+        document
+          .querySelectorAll(".renew-btn")
+          .forEach((btn) => {
+        
+            btn.addEventListener(
+              "click",
+              async () => {
+        
+                try {
+        
+                  await updateDoc(
+                    doc(
+                      db,
+                      "listings",
+                      btn.dataset.id
+                    ),
+                    {
+                      lastRenewed:
+                        serverTimestamp()
+                    }
+                  );
+        
+                  alert(
+                    "Listing renewed."
+                  );
+        
+                } catch (error) {
+        
+                  console.error(error);
+        
+                  alert(
+                    "Failed renewing listing."
+                  );
+        
+                }
+        
+              }
+            );
+        
+          });
+        
         // DELETE BUTTONS
         document
           .querySelectorAll(".delete-btn")
