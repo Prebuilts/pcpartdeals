@@ -386,3 +386,32 @@ a{
     width:100%;
   }
 }
+.listing-buttons{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.sold-btn{
+  background:#f59e0b;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.renew-btn{
+  background:#10b981;
+  color:white;
+  border:none;
+  padding:8px 12px;
+  border-radius:8px;
+  cursor:pointer;
+  margin-top:8px;
+}
+
+.listing-status{
+  margin-top:6px;
+  font-size:14px;
+}
