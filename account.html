@@ -496,7 +496,14 @@
         "browse",
         "account",
         "settings",
-        "profile"
+        "profile",
+        "mod",
+        "moderator",
+        "signin",
+        "amd",
+        "intel",
+        "amazon",
+        "nvidia"
 
       ];
 
@@ -746,6 +753,24 @@
           const data =
             docSnap.data();
 
+          const FIVE_DAYS =
+            5 * 24 * 60 * 60 * 1000;
+          
+          let expired = false;
+          
+          if (data.renewedAt) {
+          
+            const renewedTime =
+              data.renewedAt
+                .toDate()
+                .getTime();
+          
+            expired =
+              Date.now() - renewedTime >
+              FIVE_DAYS;
+          
+          }
+
           const div =
             document.createElement("div");
 
@@ -768,12 +793,17 @@
               <p>
                 €${data.price}
               </p>
-
-              <p class="listing-status">
-                Status:
-                <strong>
-                  ${data.sold ? "Sold" : "Active"}
-                </strong>
+              
+              <p class="${
+                expired
+                  ? 'expired-status'
+                  : 'active-status'
+              }">
+                ${
+                  expired
+                    ? 'Expired'
+                    : 'Active'
+                }
               </p>
 
             </div>
@@ -795,12 +825,39 @@
                 ${data.sold ? "Mark Active" : "Mark Sold"}
               </button>
             
-              <button
-                class="delete-btn"
-                data-id="${docSnap.id}"
-              >
-                Delete
-              </button>
+              <div class="post-actions">
+              
+                <button
+                  class="renew-btn"
+                  data-id="${docSnap.id}"
+                  ${
+                    !expired
+                      ? "disabled"
+                      : ""
+                  }
+                >
+                  Renew
+                </button>
+              
+                <button
+                  class="sold-btn"
+                  data-id="${docSnap.id}"
+                >
+                  ${
+                    data.sold
+                      ? "Mark Unsold"
+                      : "Mark Sold"
+                  }
+                </button>
+              
+                <button
+                  class="delete-btn"
+                  data-id="${docSnap.id}"
+                >
+                  Delete
+                </button>
+              
+              </div>
             
             </div>
 
@@ -813,55 +870,45 @@
         // SOLD BUTTONS
         document
           .querySelectorAll(".sold-btn")
-          .forEach((btn) => {
+          .forEach(btn => {
         
             btn.addEventListener(
               "click",
               async () => {
         
-                try {
-        
-                  const listingRef =
-                    doc(
-                      db,
-                      "listings",
-                      btn.dataset.id
-                    );
-        
-                  const currentlySold =
-                    btn.dataset.sold === "true";
-        
-                  await updateDoc(
-                    listingRef,
-                    {
-                      sold: !currentlySold,
-                      soldAt: !currentlySold
-                        ? serverTimestamp()
-                        : null
-                    }
+                const listingRef =
+                  doc(
+                    db,
+                    "listings",
+                    btn.dataset.id
                   );
         
-                  loadPosts();
-        
-                } catch (error) {
-        
-                  console.error(error);
-        
-                  alert(
-                    "Failed updating listing."
+                const listingSnap =
+                  await getDoc(
+                    listingRef
                   );
         
-                }
+                const currentSold =
+                  listingSnap.data().sold === true;
+        
+                await updateDoc(
+                  listingRef,
+                  {
+                    sold:
+                      !currentSold
+                  }
+                );
+        
+                loadPosts();
         
               }
             );
         
           });
 
-        // RENEW BUTTONS
         document
           .querySelectorAll(".renew-btn")
-          .forEach((btn) => {
+          .forEach(btn => {
         
             btn.addEventListener(
               "click",
@@ -876,21 +923,21 @@
                       btn.dataset.id
                     ),
                     {
-                      lastRenewed:
-                        serverTimestamp()
+                      renewedAt:
+                        serverTimestamp(),
+        
+                      active: true
                     }
                   );
         
-                  alert(
-                    "Listing renewed."
-                  );
+                  loadPosts();
         
-                } catch (error) {
+                } catch (e) {
         
-                  console.error(error);
+                  console.error(e);
         
                   alert(
-                    "Failed renewing listing."
+                    "Failed to renew listing."
                   );
         
                 }
