@@ -1088,40 +1088,72 @@ let matches =
     
     // LOAD LISTINGS
     async function loadListings() {
-
+    
       try {
-
+    
         const q =
           query(
             collection(db, "listings"),
             orderBy("createdAt", "desc")
           );
-
+    
         const snap =
           await getDocs(q);
-
-        // 30 DAYS
-        const EXPIRATION_TIME =
-          30 * 24 * 60 * 60 * 1000;
-
+    
         const now =
           Date.now();
-
+    
+        const FIVE_DAYS =
+          5 * 24 * 60 * 60 * 1000;
+    
         const activeListings = [];
-
+    
         for (const docSnap of snap.docs) {
-        
+    
           const item = {
             id: docSnap.id,
             ...docSnap.data()
           };
-        
-          // HIDE SOLD LISTINGS
+    
+          // HIDE SOLD
           if (item.sold === true) {
             continue;
           }
-        
+    
+          // OLD LISTINGS FALLBACK
+          const renewalDate =
+            item.renewedAt ||
+            item.createdAt;
+    
+          if (!renewalDate) {
+            continue;
+          }
+    
+          const renewalAge =
+            now -
+            renewalDate
+              .toDate()
+              .getTime();
+    
+          // EXPIRED
+          if (renewalAge > FIVE_DAYS) {
+            continue;
+          }
+    
+          activeListings.push(item);
+    
+        }
+    
+        allListings =
+          activeListings;
+    
         // PRODUCT FILTER
+        productFilter.innerHTML = `
+          <option value="">
+            All Products
+          </option>
+        `;
+    
         const uniqueProducts =
           [
             ...new Set(
@@ -1130,48 +1162,51 @@ let matches =
               )
             )
           ];
-
+    
         uniqueProducts.forEach(product => {
-
+    
           if (!product) return;
-
+    
           const option =
             document.createElement(
               "option"
             );
-
+    
           option.value =
             product;
-
+    
           option.textContent =
             product;
-
+    
           productFilter.appendChild(
             option
           );
-
+    
         });
-
+    
         renderListings(allListings);
+    
         cleanupMatches();
         renderMatches();
+    
         checkAlerts(allListings);
+    
         checkKeywordAlerts(
           allListings
         );
-
+    
       } catch (e) {
-
+    
         console.error(e);
-
+    
         listingGrid.innerHTML = `
           <div class="loading">
             Failed loading listings.
           </div>
         `;
-
+    
       }
-
+    
     }
     
 
