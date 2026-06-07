@@ -1004,11 +1004,12 @@ if (/(.)\1{5,}/.test(title)) {
 
               imageUrl,
 
-              lastActiveAt:
-                serverTimestamp(),
-
               sold:
                 false,
+
+              renewedAt: serverTimestamp(),
+
+              active: true,
 
               sellerUid:
                 currentUser.uid,
