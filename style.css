@@ -697,3 +697,82 @@ img {
     grid-template-columns: 1fr;
   }
 }
+/* AFFILIATE SECTION */
+
+.affiliate-section {
+
+  padding: 40px 0;
+
+}
+
+.affiliate-card {
+
+  display: block;
+
+  text-decoration: none;
+
+  background: #111827;
+
+  border: 1px solid #1f2937;
+
+  border-radius: 16px;
+
+  padding: 32px;
+
+  transition: 0.2s ease;
+
+}
+
+.affiliate-card:hover {
+
+  transform: translateY(-2px);
+
+}
+
+.affiliate-label {
+
+  display: inline-block;
+
+  margin-bottom: 12px;
+
+  padding: 6px 10px;
+
+  border-radius: 999px;
+
+  background: #2563eb;
+
+  color: white;
+
+  font-size: 12px;
+
+  font-weight: 700;
+
+}
+
+.affiliate-content h2 {
+
+  margin: 0 0 10px;
+
+}
+
+.affiliate-content p {
+
+  margin-bottom: 20px;
+
+}
+
+.affiliate-button {
+
+  display: inline-block;
+
+  padding: 12px 20px;
+
+  border-radius: 10px;
+
+  background: #2563eb;
+
+  color: white;
+
+  font-weight: 600;
+
+}
