@@ -767,7 +767,8 @@
     <div class="container">
   
       <a
-        href="https://sovrn.co/o43raom"
+        id="affiliateCard"
+        href="#"
         target="_blank"
         rel="nofollow sponsored noopener noreferrer"
         class="affiliate-card"
@@ -779,12 +780,12 @@
             Sponsored
           </span>
   
-          <h2>
-            Looking for more PC hardware deals?
+          <h2 id="affiliateTitle">
+            Loading deal...
           </h2>
-  
-          <p>
-            Browse additional offers and discover new components for your next build.
+          
+          <p id="affiliateDescription">
+            Loading offer...
           </p>
   
           <span class="affiliate-button">
@@ -858,5 +859,66 @@
   const analytics = getAnalytics(app);
 </script>
 <script src="https://cdn.apitiny.net/scripts/v2.0/main.js" data-site-id="6a0f042d4b9c17c44c003e8c" data-test-mode="false" async></script>
+<script>
+
+const affiliateOffers = [
+
+  {
+    title: "RTX 5060 Ti Deals",
+    description:
+      "Browse current RTX 5060 Ti offers and gaming GPU discounts.",
+    url:
+      "https://sovrn.co/mk2vgk4"
+  },
+
+  {
+    title: "MSI Power Supply deals",
+    description:
+      "Find deals on MSI Power Supplies for your next PC build.",
+    url:
+      "https://sovrn.co/o43raom"
+  },
+
+  {
+    title: "Gaming PC Upgrades",
+    description:
+      "Upgrade your Gaming PC with today's best hardware deals.",
+    url:
+      "https://sovrn.co/zmqbbec"
+  },
+
+  {
+    title: "AMD AM4 Budget CPU Deals",
+    description:
+      "Browse our favourite AM4 Budget CPUs at lower prices.",
+    url:
+      "https://sovrn.co/1kl8a56"
+  }
+
+];
+
+const offer =
+  affiliateOffers[
+    Math.floor(
+      Math.random() *
+      affiliateOffers.length
+    )
+  ];
+
+document.getElementById(
+  "affiliateCard"
+).href = offer.url;
+
+document.getElementById(
+  "affiliateTitle"
+).textContent =
+  offer.title;
+
+document.getElementById(
+  "affiliateDescription"
+).textContent =
+  offer.description;
+
+</script>
 </body>
 </html>
