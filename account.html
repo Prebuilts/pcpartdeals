@@ -289,60 +289,62 @@
               <div class="input-group">
               
                 <label>
-                  Ad Interests
+                  Interests
                 </label>
               
-                <select
-                  id="interests"
-                  multiple
-                  size="6"
-                >
+                <div class="interest-grid">
               
-                  <option value="gpu">
-                    Graphics Cards
-                  </option>
+                  <label>
+                    <input type="checkbox" value="gpu" class="interest-checkbox">
+                    GPUs
+                  </label>
               
-                  <option value="cpu">
-                    Processors
-                  </option>
+                  <label>
+                    <input type="checkbox" value="cpu" class="interest-checkbox">
+                    CPUs
+                  </label>
               
-                  <option value="motherboard">
+                  <label>
+                    <input type="checkbox" value="motherboard" class="interest-checkbox">
                     Motherboards
-                  </option>
+                  </label>
               
-                  <option value="ram">
+                  <label>
+                    <input type="checkbox" value="ram" class="interest-checkbox">
                     RAM
-                  </option>
+                  </label>
               
-                  <option value="storage">
-                    SSD & HDD
-                  </option>
+                  <label>
+                    <input type="checkbox" value="storage" class="interest-checkbox">
+                    Storage
+                  </label>
               
-                  <option value="psu">
+                  <label>
+                    <input type="checkbox" value="psu" class="interest-checkbox">
                     Power Supplies
-                  </option>
+                  </label>
               
-                  <option value="cooling">
+                  <label>
+                    <input type="checkbox" value="case" class="interest-checkbox">
+                    Cases
+                  </label>
+              
+                  <label>
+                    <input type="checkbox" value="cooling" class="interest-checkbox">
                     Cooling
-                  </option>
+                  </label>
               
-                  <option value="tools">
-                    PC Tools
-                  </option>
-
-                  <option value="peripherals">
+                  <label>
+                    <input type="checkbox" value="laptop" class="interest-checkbox">
+                    Laptops
+                  </label>
+              
+                  <label>
+                    <input type="checkbox" value="peripherals" class="interest-checkbox">
                     Peripherals
-                  </option>
-
-                  <option value="other">
-                    Other
-                  </option>
+                  </label>
               
-                </select>
-              
-                <small>
-                  Hold CTRL to select multiple categories.
-                </small>
+                </div>
               
               </div>
 
@@ -695,18 +697,26 @@
           const interests =
             data.interests || [];
           
-          const interestsSelect =
-            document.getElementById(
-              "interests"
-            );
+          document
+            .querySelectorAll(
+              ".interest-checkbox"
+            )
+            .forEach(box => {
           
-          [...interestsSelect.options]
-            .forEach(option => {
-          
-              option.selected =
+              box.checked =
                 interests.includes(
-                  option.value
+                  box.value
                 );
+          
+            });
+                    
+          interests:
+            [...document.querySelectorAll(
+              ".interest-checkbox:checked"
+            )]
+              .map(
+                box => box.value
+              )
           
             });
         }
