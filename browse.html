@@ -461,13 +461,43 @@
       getAuth(app);
 
     let currentUser = null;
+    let userInterests = [];
 
     onAuthStateChanged(
       auth,
-      (user) => {
-
+      async (user) => {
+    
         currentUser = user;
-
+    
+        if (!user) return;
+    
+        try {
+    
+          const settingsSnap =
+            await getDoc(
+              doc(
+                db,
+                "userSettings",
+                user.uid
+              )
+            );
+    
+          if (settingsSnap.exists()) {
+    
+            userInterests =
+              settingsSnap.data().interests || [];
+    
+          }
+    
+        } catch (e) {
+    
+          console.error(
+            "Failed loading interests",
+            e
+          );
+    
+        }
+    
       }
     );
 
@@ -712,6 +742,7 @@ async function checkListingStatus(url) {
 const affiliateAds = [
 
   {
+    category: "gpu",
     type: "card",
     title: "ASUS RTX 3050 6GB OC for sale",
     description: "Great card for budget gaming PCs and consumes very low power",
@@ -720,6 +751,7 @@ const affiliateAds = [
   },
 
   {
+    category: "cpu",
     type: "card",
     title: "Ryzen 5 5500 CPU Deal",
     description: "Save on Ryzen processors this week.",
@@ -728,6 +760,7 @@ const affiliateAds = [
   },
 
   {
+    category: "psu",
     type: "card",
     title: "PSU Pick of the week: MSI MAG A650BN",
     description: "Buy our favourite power supplies of this week.",
@@ -736,6 +769,7 @@ const affiliateAds = [
   },
 
   {
+    category: "tools",
     type: "card",
     title: "Our favourite PC building tools this week: iFixit Essentials kit",
     description: "Take your PC building hobby to the next level with iFixit kits!",
@@ -744,6 +778,7 @@ const affiliateAds = [
   },
 
   {
+    category: "gpu",
     type: "card",
     title: "RTX 5060 TI GPU deals",
     description: "Build your next Gaming PC with the modern RTX cards!",
@@ -752,6 +787,7 @@ const affiliateAds = [
   },
 
   {
+    category: "gpu",
     type: "card",
     title: "AMD RX 9070 XT deals are waiting!",
     description: "Browse great RX 9070 XT deals of this week!",
@@ -814,10 +850,34 @@ const affiliateAds = [
 // RANDOM AFFILIATE
 function getRandomAffiliate() {
 
-  return affiliateAds[
+  let availableAds =
+    affiliateAds;
+
+  if (
+    currentUser &&
+    userInterests.length
+  ) {
+
+    const matchingAds =
+      affiliateAds.filter(ad =>
+        userInterests.includes(
+          ad.category
+        )
+      );
+
+    if (matchingAds.length) {
+
+      availableAds =
+        matchingAds;
+
+    }
+
+  }
+
+  return availableAds[
     Math.floor(
       Math.random() *
-      affiliateAds.length
+      availableAds.length
     )
   ];
 
