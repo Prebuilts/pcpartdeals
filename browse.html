@@ -951,14 +951,27 @@ ${!listingStatus.valid ? `
       
         // BANNER ADS
         if (affiliate.type === "banner") {
-      
+        
           adCard.innerHTML = `
-            <div class="affiliate-banner">
-              ${affiliate.html}
+        
+            <div class="affiliate-ad banner-ad">
+        
+              <div class="affiliate-content">
+        
+                <span class="affiliate-label">
+                  Sponsored
+                </span>
+        
+                ${affiliate.html}
+        
+              </div>
+        
             </div>
+        
           `;
-      
+        
           return;
+        
         }
       
         // CARD ADS
