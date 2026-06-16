@@ -544,3 +544,21 @@ select:focus{
   cursor: pointer;
 
 }
+.banner-ad {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-ad img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 12px;
+}
+
+.banner-ad a {
+  display: block;
+  width: 100%;
+}
