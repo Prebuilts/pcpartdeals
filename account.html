@@ -499,15 +499,6 @@
 
         currentUser = user;
 
-        // UPDATE LAST ACTIVE
-        await setDoc(
-          doc(db, "userSettings", user.uid),
-          {
-            lastActive: serverTimestamp()
-          },
-          { merge: true }
-        );
-
         authRequired.classList.add(
           "hidden"
         );
@@ -688,10 +679,19 @@
           ).value =
             data.delivery || "shipping";
 
-          document.getElementById(
-            "username"
-          ).value =
+          const usernameInput =
+            document.getElementById(
+              "username"
+            );
+          
+          usernameInput.value =
             data.username || "";
+          
+          if (data.username) {
+          
+            usernameInput.disabled = true;
+          
+          }
           const interests =
             data.interests || [];
           
@@ -737,9 +737,29 @@
               .toLowerCase()
               .trim();
 
-          await claimUsername(
-            username
-          );
+          const settingsRef =
+            doc(
+              db,
+              "userSettings",
+              currentUser.uid
+            );
+          
+          const settingsSnap =
+            await getDoc(settingsRef);
+          
+          const existingUsername =
+            settingsSnap.data()?.username;
+          
+          if (
+            username &&
+            username !== existingUsername
+          ) {
+          
+            await claimUsername(
+              username
+            );
+          
+          }
 
           await setDoc(
             doc(
