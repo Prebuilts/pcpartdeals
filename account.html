@@ -285,6 +285,67 @@
 
               </div>
 
+              <!-- INTERESTS -->
+              <div class="input-group">
+              
+                <label>
+                  Ad Interests
+                </label>
+              
+                <select
+                  id="interests"
+                  multiple
+                  size="6"
+                >
+              
+                  <option value="gpu">
+                    Graphics Cards
+                  </option>
+              
+                  <option value="cpu">
+                    Processors
+                  </option>
+              
+                  <option value="motherboard">
+                    Motherboards
+                  </option>
+              
+                  <option value="ram">
+                    RAM
+                  </option>
+              
+                  <option value="storage">
+                    SSD & HDD
+                  </option>
+              
+                  <option value="psu">
+                    Power Supplies
+                  </option>
+              
+                  <option value="cooling">
+                    Cooling
+                  </option>
+              
+                  <option value="tools">
+                    PC Tools
+                  </option>
+
+                  <option value="peripherals">
+                    Peripherals
+                  </option>
+
+                  <option value="other">
+                    Other
+                  </option>
+              
+                </select>
+              
+                <small>
+                  Hold CTRL to select multiple categories.
+                </small>
+              
+              </div>
+
               <button
                 type="submit"
                 class="save-btn"
@@ -631,7 +692,23 @@
             "username"
           ).value =
             data.username || "";
-
+          const interests =
+            data.interests || [];
+          
+          const interestsSelect =
+            document.getElementById(
+              "interests"
+            );
+          
+          [...interestsSelect.options]
+            .forEach(option => {
+          
+              option.selected =
+                interests.includes(
+                  option.value
+                );
+          
+            });
         }
 
       } catch (error) {
@@ -687,7 +764,15 @@
                   "delivery"
                 ).value,
 
-              username
+              username,
+
+              interests:
+                [...document.getElementById(
+                  "interests"
+                ).selectedOptions]
+                  .map(
+                    option => option.value
+                  )
 
             },
             { merge: true }
