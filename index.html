@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Used & New computer parts: Shop PC parts second-hand | PCPartDeals</title>
+  <title>Used PC Parts Europe | Second-Hand GPUs, CPUs & Gaming PC Deals</title>
 
   <link rel="stylesheet" href="style.css" />
 
@@ -22,7 +22,8 @@
   "name": "PCPartDeals",
   "alternateName": "PartDeals",
   "url": "https://pcpartdeals.eu/",
-  "logo": ""
+  "logo": "https://pcpartdeals.eu/images/logo.png",
+  "description": "PCPartDeals helps users discover used PC hardware listings across European marketplaces."
 }
 </script>
 <!-- SEO META TAGS -->
@@ -31,7 +32,7 @@
 
 <meta
   name="description"
-  content=" Shop used & new PC parts in Europe. PCPartDeals helps you find the best PC hardware deals from Vinted, Kleinanzeigen, Leboncoin, Wallapop, Yaga and Osta in one place. Browse GPUs, CPUs, gaming PCs, RAM, SSDs and more."
+  content="Find used PC parts across Europe, including second-hand GPUs, CPUs and computer components from Vinted, Kleinanzeigen, Leboncoin, Wallapop, Yaga, Osta and supported eBay listings."
 />
 
 <meta
@@ -59,17 +60,17 @@
 
 <meta
   property="og:title"
-  content="PCPartDeals - Find The Best PC Hardware Deals"
+  content="Used PC Parts Europe | PCPartDeals"
 />
 
 <meta
   property="og:description"
-  content="Browse the best PC hardware deals from Vinted, Kleinanzeigen, Wallapop, Leboncoin, Yaga and Osta in one clean marketplace."
+  content="Discover used GPUs, CPUs and second-hand PC components from European marketplaces including Vinted, Kleinanzeigen, Leboncoin and Wallapop."
 />
 
 <meta
   property="og:url"
-  content="https://pcpartdeals.eu"
+  content="https://pcpartdeals.eu/"
 />
 
 <meta
@@ -90,12 +91,12 @@
 
 <meta
   name="twitter:title"
-  content="PCPartDeals - Find The Best PC Hardware Deals"
+  content="Used PC Parts Europe | PCPartDeals"
 />
 
 <meta
   name="twitter:description"
-  content="The best marketplace for finding used PC hardware deals from Vinted, Kleinanzeigen, Wallapop, Leboncoin, Yaga, and Osta"
+  content="Find second-hand GPUs, CPUs and PC parts from marketplaces across Europe."
 />
 
 <meta
@@ -106,7 +107,7 @@
 <!-- CANONICAL -->
 <link
   rel="canonical"
-  href="https://pcpartdeals.eu"
+  href="https://pcpartdeals.eu/"
 />
 
 <!-- FAVICON -->
@@ -126,13 +127,45 @@
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "PCPartDeals",
-  "url": "https://pcpartdeals.eu",
-  "description": "PCPartDeals collects the best PC hardware deals from Yaga, Osta and Vinted into one platform.",
+  "url": "https://pcpartdeals.eu/",
+  "description": "PCPartDeals is a European used PC parts discovery and marketplace aggregation website.",
   "potentialAction": {
     "@type": "SearchAction",
     "target": "https://pcpartdeals.eu/browse.html?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Where can I buy used PC parts in Europe?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "PCPartDeals helps you discover used GPUs, CPUs, RAM, motherboards and other components listed on European marketplaces such as Vinted, Kleinanzeigen, Leboncoin, Wallapop, Yaga and Osta."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is PCPartDeals a marketplace or an aggregator?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "PCPartDeals primarily aggregates and organizes listings from supported marketplaces. Users can also submit relevant external listings, while purchases normally take place on the original marketplace."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I check before buying a used graphics card?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Check the seller history, request recent testing evidence, compare the price with similar cards, confirm the exact model and review the original marketplace's buyer protection terms."
+      }
+    }
+  ]
 }
 </script>
   <meta name="language" content="en">
@@ -198,16 +231,17 @@
     <div class="container">
       <div class="home-hero-panel">
         <div class="hero-content">
-          <div class="tag">Buy & Sell Computer Parts Easily</div>
+          <div class="tag">Used PC parts from European marketplaces</div>
 
           <h1>
-            The modern marketplace for
-            <span>PC hardware</span>
+            Find used PC parts and
+            <span>GPU deals across Europe</span>
           </h1>
 
           <p>
-            Find GPUs, CPUs, RAM, motherboards, gaming PCs and more.
-            Sell your old hardware quickly or discover great deals from trusted sellers.
+            PCPartDeals helps European PC builders discover used GPUs, CPUs, RAM,
+            motherboards and gaming PC deals from Vinted, Kleinanzeigen, Leboncoin,
+            Wallapop, Yaga, Osta and other supported sources.
           </p>
 
           <form class="home-search" id="homeSearchForm">
@@ -250,13 +284,13 @@
           <div class="hero-stats">
             <div class="stat-card">
               <img src="icons/tag-plus-svgrepo-com.svg" alt="" aria-hidden="true">
-              <h3 id="listingsCounter">0</h3>
-              <p>Listings in our database</p>
+              <h3 id="listingsCounter">Browse</h3>
+              <p>Used hardware listings</p>
             </div>
             <div class="stat-card">
               <img src="icons/user-2-svgrepo-com.svg" alt="" aria-hidden="true">
-              <h3 id="usersCounter">0</h3>
-              <p>Users</p>
+              <h3 id="usersCounter">Europe</h3>
+              <p>PC builder community</p>
             </div>
             <div class="stat-card">
               <img src="icons/notifications-alert-svgrepo-com.svg" alt="" aria-hidden="true">
@@ -284,7 +318,10 @@
       </div>
 
       <div class="home-listing-grid" id="homeListingGrid" aria-live="polite">
-        <div class="home-listing-loading">Loading featured listings...</div>
+        <div class="home-listing-loading">
+          Browse used GPU, CPU, RAM, motherboard and gaming PC listings from European marketplaces.
+          <a href="https://pcpartdeals.eu/browse.html">Open all current listings</a>.
+        </div>
       </div>
 
       <div class="catalog-heading category-heading">
@@ -390,7 +427,7 @@
 
     function renderFeaturedListings(listings) {
       if (!listings.length) {
-        homeListingGrid.innerHTML = '<div class="home-listing-loading">No GPU or CPU listings are available right now.</div>';
+        homeListingGrid.innerHTML = '<div class="home-listing-loading">Browse used GPU, CPU, RAM, motherboard and gaming PC listings from European marketplaces. <a href="https://pcpartdeals.eu/browse.html">View all listings</a>.</div>';
         return;
       }
 
@@ -433,14 +470,126 @@
         renderFeaturedListings(candidates);
       } catch (error) {
         console.error(error);
-        usersCounter.textContent = "?";
-        listingsCounter.textContent = "?";
-        homeListingGrid.innerHTML = '<div class="home-listing-loading">Featured listings could not be loaded.</div>';
+        usersCounter.textContent = "Europe";
+        listingsCounter.textContent = "Browse";
+        homeListingGrid.innerHTML = '<div class="home-listing-loading">Browse used GPU, CPU, RAM, motherboard and gaming PC listings from European marketplaces. <a href="https://pcpartdeals.eu/browse.html">View all listings</a>.</div>';
       }
     }
 
     loadHomepageData();
   </script>
+
+  <section class="seo-overview" aria-labelledby="european-pc-parts">
+    <div class="container">
+      <div class="seo-intro">
+        <p class="catalog-kicker">Used computer components across Europe</p>
+        <h2 id="european-pc-parts">Compare second-hand PC parts from multiple marketplaces</h2>
+        <p>
+          PCPartDeals is a discovery and aggregation service for European PC builders. It brings
+          together external listings for used graphics cards, processors, memory, storage and
+          motherboards so you can compare options without searching every marketplace separately.
+          Coverage includes Germany, France, Spain, Poland, Estonia and other European countries.
+        </p>
+      </div>
+
+      <div class="seo-card-grid">
+        <article class="seo-card">
+          <h3>Used GPU deals in Europe</h3>
+          <p>Compare second-hand NVIDIA GeForce and AMD Radeon cards, including popular RTX and RX models.</p>
+          <a href="guides/used-gpu-europe.html">Read the used GPU guide</a>
+        </article>
+        <article class="seo-card">
+          <h3>Second-hand CPUs and components</h3>
+          <p>Find used Intel and AMD processors alongside RAM, SSDs, HDDs and compatible motherboards.</p>
+          <a href="guides/second-hand-pc-parts-europe.html">Explore second-hand PC parts</a>
+        </article>
+        <article class="seo-card">
+          <h3>Buy through the original marketplace</h3>
+          <p>PCPartDeals helps you discover offers; listing details and purchases remain on the original platform.</p>
+          <a href="articles/how-to-avoid-gpu-scams.html">Learn how to buy safely</a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-links-section" aria-labelledby="popular-marketplaces">
+    <div class="container">
+      <div class="section-title">
+        <h2 id="popular-marketplaces">Popular European marketplaces</h2>
+        <p>Learn how to search each platform and what to check before buying used hardware.</p>
+      </div>
+      <div class="seo-link-grid">
+        <a href="markets/kleinanzeigen-gpu-deals.html">Kleinanzeigen GPU deals</a>
+        <a href="markets/leboncoin-pc-parts.html">Leboncoin PC parts</a>
+        <a href="markets/wallapop-pc-parts.html">Wallapop PC parts</a>
+        <a href="markets/vinted-pc-parts.html">Vinted PC parts</a>
+        <a href="guides/where-to-buy-used-pc-parts-in-europe.html">Where to buy used PC parts</a>
+        <a href="browse.html">Browse aggregated listings</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-links-section seo-countries" aria-labelledby="countries-covered">
+    <div class="container">
+      <div class="section-title">
+        <h2 id="countries-covered">Countries we cover</h2>
+        <p>Local marketplace availability varies, but PCPartDeals helps users research offers across Europe.</p>
+      </div>
+      <div class="seo-link-grid">
+        <a href="countries/germany/used-gpu.html">Used GPUs in Germany</a>
+        <a href="countries/france/used-pc-parts.html">Used PC parts in France</a>
+        <a href="countries/spain/used-pc-parts.html">Used PC parts in Spain</a>
+        <a href="countries/poland/used-pc-parts.html">Used PC parts in Poland</a>
+        <a href="guides/used-pc-parts-europe.html">European used PC parts guide</a>
+        <a href="guides/used-cpu-europe.html">Used CPUs in Europe</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="seo-links-section" aria-labelledby="popular-searches">
+    <div class="container">
+      <div class="section-title">
+        <h2 id="popular-searches">Popular searches</h2>
+        <p>Practical guides for finding and evaluating second-hand computer hardware.</p>
+      </div>
+      <div class="seo-link-grid">
+        <a href="guides/used-pc-parts-europe.html">Used PC parts Europe</a>
+        <a href="guides/used-gpu-europe.html">Used GPU Europe</a>
+        <a href="guides/used-graphics-cards-europe.html">Used graphics cards Europe</a>
+        <a href="guides/cheap-gpu-europe.html">Cheap GPU Europe</a>
+        <a href="guides/second-hand-pc-parts-europe.html">Second-hand PC parts Europe</a>
+        <a href="guides/used-cpu-europe.html">Used CPU Europe</a>
+        <a href="guides/used-gaming-pc-parts-europe.html">Used gaming PC parts Europe</a>
+        <a href="guides/where-to-buy-used-pc-parts-in-europe.html">Where to buy used PC parts in Europe</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq-section" aria-labelledby="homepage-faq">
+    <div class="container">
+      <div class="section-title">
+        <h2 id="homepage-faq">Used PC parts FAQ</h2>
+      </div>
+      <div class="faq-grid">
+        <details>
+          <summary>Where can I buy used PC parts in Europe?</summary>
+          <p>Search established regional marketplaces and compare listings through PCPartDeals. Useful sources include Vinted, Kleinanzeigen, Leboncoin, Wallapop, Yaga and Osta, depending on your country.</p>
+        </details>
+        <details>
+          <summary>Is PCPartDeals a marketplace or an aggregator?</summary>
+          <p>PCPartDeals primarily helps users discover and compare external marketplace listings. Users may submit relevant listings, but purchases generally take place on the original marketplace.</p>
+        </details>
+        <details>
+          <summary>Is it safe to buy a second-hand graphics card?</summary>
+          <p>It can be safe when you verify the seller, request testing evidence, inspect the card description and use the marketplace's protected payment process. Avoid offers that are implausibly cheap.</p>
+        </details>
+        <details>
+          <summary>Can I find used CPUs, RAM and storage?</summary>
+          <p>Yes. PCPartDeals covers CPUs, GPUs, motherboards, RAM, HDDs and SSDs, with filters that help narrow the live listing feed by category and marketplace.</p>
+        </details>
+      </div>
+    </div>
+  </section>
 
   <!-- FEATURES -->
   <section class="features">

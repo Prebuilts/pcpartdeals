@@ -1,0 +1,41 @@
+# PCPartDeals
+
+PCPartDeals is a European used PC parts discovery and marketplace aggregation website. It helps users find second-hand GPUs, CPUs, RAM, motherboards, gaming PCs, HDDs, SSDs and other computer components across supported European marketplaces.
+
+Supported listing sources may include Vinted, Kleinanzeigen, Leboncoin, Wallapop, Yaga, Osta and eBay where available. PCPartDeals primarily helps with discovery and comparison. Purchases generally take place on the original marketplace.
+
+## Important pages
+
+- https://pcpartdeals.eu/
+- https://pcpartdeals.eu/browse.html
+- https://pcpartdeals.eu/guides/used-pc-parts-europe.html
+- https://pcpartdeals.eu/guides/used-gpu-europe.html
+- https://pcpartdeals.eu/guides/used-graphics-cards-europe.html
+- https://pcpartdeals.eu/guides/cheap-gpu-europe.html
+- https://pcpartdeals.eu/guides/second-hand-pc-parts-europe.html
+- https://pcpartdeals.eu/guides/used-cpu-europe.html
+- https://pcpartdeals.eu/guides/used-gaming-pc-parts-europe.html
+- https://pcpartdeals.eu/guides/where-to-buy-used-pc-parts-in-europe.html
+
+## Marketplace guides
+
+- https://pcpartdeals.eu/markets/kleinanzeigen-gpu-deals.html
+- https://pcpartdeals.eu/markets/leboncoin-pc-parts.html
+- https://pcpartdeals.eu/markets/wallapop-pc-parts.html
+- https://pcpartdeals.eu/markets/vinted-pc-parts.html
+
+## Country guides
+
+- https://pcpartdeals.eu/countries/germany/used-gpu.html
+- https://pcpartdeals.eu/countries/france/used-pc-parts.html
+- https://pcpartdeals.eu/countries/spain/used-pc-parts.html
+- https://pcpartdeals.eu/countries/poland/used-pc-parts.html
+
+## Safety and editorial content
+
+- https://pcpartdeals.eu/articles/how-to-avoid-gpu-scams
+- https://pcpartdeals.eu/articles/where-to-buy-pc-parts
+
+## Sitemap
+
+- https://pcpartdeals.eu/sitemap.xml
