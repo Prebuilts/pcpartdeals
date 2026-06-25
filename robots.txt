@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 
-Sitemap: https://pcpartdeals.eu/sitemap.xml
+Sitemap: https://pcpartdeals.eu/sitemap-index.xml
