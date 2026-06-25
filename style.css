@@ -1053,7 +1053,7 @@ img {
 .home-hero .hero-content h1 {
   max-width: 690px;
   margin-bottom: 24px;
-  font-size: clamp(3rem, 5vw, 4.7rem);
+  font-size: clamp(2.75rem, 4.35vw, 4.05rem);
   line-height: .96;
   letter-spacing: -5px;
   word-spacing: .12em;
@@ -1502,7 +1502,7 @@ img {
   }
 
   .home-hero .hero-content h1 {
-    font-size: 2.55rem;
+    font-size: 2.25rem;
     letter-spacing: -2.5px;
   }
 

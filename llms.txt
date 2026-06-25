@@ -15,6 +15,7 @@ Supported listing sources may include Vinted, Kleinanzeigen, Leboncoin, Wallapop
 - https://pcpartdeals.eu/guides/second-hand-pc-parts-europe.html
 - https://pcpartdeals.eu/guides/used-cpu-europe.html
 - https://pcpartdeals.eu/guides/used-gaming-pc-parts-europe.html
+- https://pcpartdeals.eu/guides/pc-parts-price-performance-list.html
 - https://pcpartdeals.eu/guides/where-to-buy-used-pc-parts-in-europe.html
 
 ## Marketplace guides
