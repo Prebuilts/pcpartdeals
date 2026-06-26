@@ -341,9 +341,6 @@
       getDocs,
       query,
       orderBy,
-      limit,
-      startAfter,
-      Timestamp,
       addDoc,
       serverTimestamp,
       doc,
@@ -508,14 +505,9 @@
     let filteredListings = [];
     let visibleCount = 21;
     const PAGE_SIZE = 21;
-    const FETCH_BATCH_SIZE = 30;
-    const MAX_FETCH_BATCHES = 6;
     const CACHE_TTL_MS = 30 * 60 * 1000;
     const FIVE_DAYS_MS = 5 * 24 * 60 * 60 * 1000;
-    const BROWSE_CACHE_KEY = "pcpartdealsBrowseListingsCacheV1";
-    let nextCursorMillis = null;
-    let hasMoreListings = true;
-    let isLoadingMoreListings = false;
+    const BROWSE_CACHE_KEY = "pcpartdealsBrowseListingsCacheV2";
     let browseCacheFetchedAt = null;
 
     const PRODUCT_CATEGORIES = [
@@ -652,9 +644,7 @@
           JSON.stringify({
             cachedAt: browseCacheFetchedAt,
             listings: allListings.map(normalizeListingForCache),
-            visibleCount,
-            nextCursorMillis,
-            hasMoreListings
+            visibleCount
           })
         );
       } catch (error) {
@@ -693,99 +683,35 @@
       }
     }
 
-    function hasActiveFilters() {
-      return Boolean(
-        searchInput.value.trim() ||
-        productFilter.value ||
-        marketplaceFilter.value ||
-        countryFilter.value ||
-        conditionFilter.value ||
-        shippingFilter.value ||
-        sortPrice.value
-      );
-    }
-
-    async function fetchListingsPage(cursorMillis = null) {
+    async function fetchAllActiveListings() {
       const activeListings = [];
-      const knownIds =
-        new Set(
-          allListings.map(item => item.id)
-        );
-      let currentCursorMillis = cursorMillis;
-      let fetchedFullBatch = false;
-      let batchCount = 0;
 
-      while (activeListings.length < PAGE_SIZE && batchCount < MAX_FETCH_BATCHES) {
-        const queryParts = [
-          collection(db, "listings"),
-          orderBy("createdAt", "desc")
-        ];
-
-        if (currentCursorMillis) {
-          queryParts.push(
-            startAfter(
-              Timestamp.fromMillis(currentCursorMillis)
-            )
-          );
-        }
-
-        queryParts.push(
-          limit(FETCH_BATCH_SIZE)
+      const snap =
+        await getDocs(
+          query(
+            collection(db, "listings"),
+            orderBy("createdAt", "desc")
+          )
         );
 
-        const snap =
-          await getDocs(
-            query(...queryParts)
-          );
+      const now =
+        Date.now();
 
-        if (snap.empty) {
-          fetchedFullBatch = false;
-          break;
+      for (const docSnap of snap.docs) {
+        const item =
+          normalizeListingForCache({
+            id: docSnap.id,
+            ...docSnap.data()
+          });
+
+        if (!isActiveListing(item, now)) {
+          continue;
         }
 
-        fetchedFullBatch = snap.docs.length === FETCH_BATCH_SIZE;
-
-        const lastDoc =
-          snap.docs[snap.docs.length - 1];
-
-        currentCursorMillis =
-          timestampToMillis(
-            lastDoc.data().createdAt
-          );
-
-        const now =
-          Date.now();
-
-        for (const docSnap of snap.docs) {
-          const item =
-            normalizeListingForCache({
-              id: docSnap.id,
-              ...docSnap.data()
-            });
-
-          if (
-            knownIds.has(item.id) ||
-            activeListings.some(listing => listing.id === item.id) ||
-            !isActiveListing(item, now)
-          ) {
-            continue;
-          }
-
-          activeListings.push(item);
-        }
-
-        batchCount++;
-
-        if (!fetchedFullBatch || !currentCursorMillis) {
-          break;
-        }
+        activeListings.push(item);
       }
 
-      return {
-        listings: activeListings,
-        nextCursorMillis: currentCursorMillis,
-        hasMoreListings: fetchedFullBatch
-      };
+      return activeListings;
     }
 
     // CHECK IF LISTING URL LOOKS VALID
@@ -1602,12 +1528,6 @@ ${!listingStatus.valid ? `
               )
             );
 
-          nextCursorMillis =
-            Number(cached.nextCursorMillis || 0) || null;
-
-          hasMoreListings =
-            cached.hasMoreListings !== false;
-
           cleanupMatches();
           checkAlerts(allListings);
           renderMatches();
@@ -1617,17 +1537,8 @@ ${!listingStatus.valid ? `
 
         }
 
-        const page =
-          await fetchListingsPage();
-
         allListings =
-          page.listings;
-
-        nextCursorMillis =
-          page.nextCursorMillis;
-
-        hasMoreListings =
-          page.hasMoreListings;
+          await fetchAllActiveListings();
 
         visibleCount =
           PAGE_SIZE;
@@ -1665,12 +1576,6 @@ ${!listingStatus.valid ? `
                 allListings.length || PAGE_SIZE
               )
             );
-
-          nextCursorMillis =
-            Number(staleCache.nextCursorMillis || 0) || null;
-
-          hasMoreListings =
-            staleCache.hasMoreListings !== false;
 
           cleanupMatches();
           checkAlerts(allListings);
@@ -2061,70 +1966,15 @@ ${!listingStatus.valid ? `
       applyFilters();
     });
 
-    window.addEventListener("scroll", async () => {
+    window.addEventListener("scroll", () => {
       const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
-      if (!nearBottom || isLoadingMoreListings) return;
+      if (!nearBottom || visibleCount >= filteredListings.length) return;
 
-      if (visibleCount < filteredListings.length) {
-        const oldCount = visibleCount;
-        visibleCount += PAGE_SIZE;
-        document.querySelector(".load-more-sentinel")?.remove();
-        renderListings(filteredListings.slice(oldCount, visibleCount), true);
-        writeBrowseCache();
-        return;
-      }
-
-      if (hasActiveFilters() || !hasMoreListings) {
-        return;
-      }
-
-      isLoadingMoreListings = true;
-
-      const sentinel =
-        document.querySelector(".load-more-sentinel");
-
-      if (sentinel) {
-        sentinel.textContent = "Loading more deals...";
-      }
-
-      try {
-        const page =
-          await fetchListingsPage(nextCursorMillis);
-
-        if (!page.listings.length) {
-          hasMoreListings =
-            page.hasMoreListings;
-
-          nextCursorMillis =
-            page.nextCursorMillis || nextCursorMillis;
-
-          writeBrowseCache(true);
-          return;
-        }
-
-        allListings =
-          [
-            ...allListings,
-            ...page.listings
-          ];
-
-        nextCursorMillis =
-          page.nextCursorMillis;
-
-        hasMoreListings =
-          page.hasMoreListings;
-
-        visibleCount += PAGE_SIZE;
-        writeBrowseCache(true);
-        applyFilters(false);
-      } catch (error) {
-        console.error(
-          "Failed loading more listings",
-          error
-        );
-      } finally {
-        isLoadingMoreListings = false;
-      }
+      const oldCount = visibleCount;
+      visibleCount += PAGE_SIZE;
+      document.querySelector(".load-more-sentinel")?.remove();
+      renderListings(filteredListings.slice(oldCount, visibleCount), true);
+      writeBrowseCache();
     }, { passive: true });
 
     const params = new URLSearchParams(window.location.search);
