@@ -370,7 +370,10 @@
       getFirestore,
       collection,
       getCountFromServer,
-      getDocs
+      getDocs,
+      query,
+      orderBy,
+      limit
     } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -389,6 +392,8 @@
     const usersCounter = document.getElementById("usersCounter");
     const listingsCounter = document.getElementById("listingsCounter");
     const homeListingGrid = document.getElementById("homeListingGrid");
+    const HOME_CACHE_KEY = "pcpartdealsHomeCacheV1";
+    const CACHE_TTL_MS = 30 * 60 * 1000;
 
     onAuthStateChanged(auth, user => {
       document.querySelectorAll(".header-auth-button").forEach(button => {
@@ -418,11 +423,56 @@
       return element.innerHTML;
     }
 
+    function readCache(key, allowExpired = false) {
+      try {
+        const cached = JSON.parse(localStorage.getItem(key) || "null");
+
+        if (!cached || !cached.cachedAt) {
+          return null;
+        }
+
+        if (!allowExpired && Date.now() - Number(cached.cachedAt) >= CACHE_TTL_MS) {
+          return null;
+        }
+
+        return cached;
+      } catch (error) {
+        console.warn("Failed reading homepage cache", error);
+        return null;
+      }
+    }
+
+    function writeCache(key, value) {
+      try {
+        localStorage.setItem(
+          key,
+          JSON.stringify({
+            ...value,
+            cachedAt: Date.now()
+          })
+        );
+      } catch (error) {
+        console.warn("Failed writing homepage cache", error);
+      }
+    }
+
     function isGpuOrCpu(item) {
       const searchable = `${item.productCategory || item.productType || ""} ${item.title || ""}`.toLowerCase();
       return ["gpu", "graphics card", "video card", "cpu", "processor", "ryzen", "intel core"].some(
         term => searchable.includes(term)
       );
+    }
+
+    function normalizeFeaturedListing(item) {
+      return {
+        id: item.id || "",
+        title: item.title || "",
+        price: Number(item.price || 0),
+        imageUrl: item.imageUrl || "",
+        externalLink: item.externalLink || "",
+        productCategory: item.productCategory || "",
+        productType: item.productType || ""
+      };
     }
 
     function renderFeaturedListings(listings) {
@@ -451,24 +501,52 @@
     }
 
     async function loadHomepageData() {
+      const cached = readCache(HOME_CACHE_KEY);
+
+      if (cached) {
+        usersCounter.textContent = cached.usersCount ?? "Europe";
+        listingsCounter.textContent = cached.listingsCount ?? "Browse";
+        renderFeaturedListings(cached.featuredListings || []);
+        return;
+      }
+
       try {
         const [usersSnap, listingsSnap, listingDocs] = await Promise.all([
           getCountFromServer(collection(db, "userSettings")),
           getCountFromServer(collection(db, "listings")),
-          getDocs(collection(db, "listings"))
+          getDocs(query(collection(db, "listings"), orderBy("createdAt", "desc"), limit(90)))
         ]);
 
-        usersCounter.textContent = usersSnap.data().count;
-        listingsCounter.textContent = listingsSnap.data().count;
+        const usersCount = usersSnap.data().count;
+        const listingsCount = listingsSnap.data().count;
+
+        usersCounter.textContent = usersCount;
+        listingsCounter.textContent = listingsCount;
 
         const candidates = listingDocs.docs
           .map(docSnap => ({ id: docSnap.id, ...docSnap.data() }))
           .filter(item => item.sold !== true && isGpuOrCpu(item))
           .sort(() => Math.random() - 0.5)
-          .slice(0, 3);
+          .slice(0, 3)
+          .map(normalizeFeaturedListing);
+
+        writeCache(HOME_CACHE_KEY, {
+          usersCount,
+          listingsCount,
+          featuredListings: candidates
+        });
 
         renderFeaturedListings(candidates);
       } catch (error) {
+        const staleCache = readCache(HOME_CACHE_KEY, true);
+
+        if (staleCache) {
+          usersCounter.textContent = staleCache.usersCount ?? "Europe";
+          listingsCounter.textContent = staleCache.listingsCount ?? "Browse";
+          renderFeaturedListings(staleCache.featuredListings || []);
+          return;
+        }
+
         console.error(error);
         usersCounter.textContent = "Europe";
         listingsCounter.textContent = "Browse";

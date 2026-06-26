@@ -341,6 +341,9 @@
       getDocs,
       query,
       orderBy,
+      limit,
+      startAfter,
+      Timestamp,
       addDoc,
       serverTimestamp,
       doc,
@@ -505,6 +508,15 @@
     let filteredListings = [];
     let visibleCount = 21;
     const PAGE_SIZE = 21;
+    const FETCH_BATCH_SIZE = 30;
+    const MAX_FETCH_BATCHES = 6;
+    const CACHE_TTL_MS = 30 * 60 * 1000;
+    const FIVE_DAYS_MS = 5 * 24 * 60 * 60 * 1000;
+    const BROWSE_CACHE_KEY = "pcpartdealsBrowseListingsCacheV1";
+    let nextCursorMillis = null;
+    let hasMoreListings = true;
+    let isLoadingMoreListings = false;
+    let browseCacheFetchedAt = null;
 
     const PRODUCT_CATEGORIES = [
       "CPU",
@@ -556,6 +568,224 @@
       const itemCountry = getMarketplaceCountry(item);
       if (itemCountry && itemCountry.toLowerCase() === country.toLowerCase()) return true;
       return (marketplaceCountries[item.marketplace] || []).includes(country);
+    }
+
+    function timestampToMillis(value) {
+      if (!value) return 0;
+      if (typeof value === "number") return value;
+      if (typeof value === "string") return Date.parse(value) || 0;
+      if (typeof value.toMillis === "function") return value.toMillis();
+      if (typeof value.toDate === "function") return value.toDate().getTime();
+      if (typeof value.seconds === "number") return value.seconds * 1000;
+      if (typeof value._seconds === "number") return value._seconds * 1000;
+      return 0;
+    }
+
+    function normalizeListingForCache(item) {
+      const createdAtMillis = timestampToMillis(item.createdAt || item._createdAtMillis);
+      const renewedAtMillis = timestampToMillis(item.renewedAt || item._renewedAtMillis);
+
+      return {
+        id: item.id || "",
+        title: item.title || "",
+        price: Number(item.price || 0),
+        shippingPrice: Number(item.shippingPrice || 0),
+        totalPrice: Number(item.totalPrice || item.price || 0),
+        imageUrl: item.imageUrl || "",
+        externalLink: item.externalLink || "",
+        marketplace: item.marketplace || "",
+        condition: item.condition || "",
+        sellerUsername: item.sellerUsername || "",
+        username: item.username || "",
+        productCategory: item.productCategory || "",
+        productType: item.productType || "",
+        country: item.country || "",
+        marketplaceCountry: item.marketplaceCountry || "",
+        locationCountry: item.locationCountry || "",
+        sold: item.sold === true,
+        createdAt: createdAtMillis,
+        renewedAt: renewedAtMillis,
+        _createdAtMillis: createdAtMillis,
+        _renewedAtMillis: renewedAtMillis
+      };
+    }
+
+    function isActiveListing(item, now = Date.now()) {
+      if (!item || item.sold === true) return false;
+
+      const renewalMillis =
+        timestampToMillis(item.renewedAt || item._renewedAtMillis) ||
+        timestampToMillis(item.createdAt || item._createdAtMillis);
+
+      return Boolean(renewalMillis) && now - renewalMillis <= FIVE_DAYS_MS;
+    }
+
+    function readBrowseCache(allowExpired = false) {
+      try {
+        const cached = JSON.parse(
+          localStorage.getItem(BROWSE_CACHE_KEY) || "null"
+        );
+
+        if (!cached || !cached.cachedAt || !Array.isArray(cached.listings)) {
+          return null;
+        }
+
+        if (!allowExpired && Date.now() - Number(cached.cachedAt) >= CACHE_TTL_MS) {
+          return null;
+        }
+
+        return cached;
+      } catch (error) {
+        console.warn("Failed reading browse cache", error);
+        return null;
+      }
+    }
+
+    function writeBrowseCache(refreshFetchedAt = false) {
+      try {
+        if (refreshFetchedAt || !browseCacheFetchedAt) {
+          browseCacheFetchedAt = Date.now();
+        }
+
+        localStorage.setItem(
+          BROWSE_CACHE_KEY,
+          JSON.stringify({
+            cachedAt: browseCacheFetchedAt,
+            listings: allListings.map(normalizeListingForCache),
+            visibleCount,
+            nextCursorMillis,
+            hasMoreListings
+          })
+        );
+      } catch (error) {
+        console.warn("Failed writing browse cache", error);
+      }
+    }
+
+    function populateProductFilter() {
+      const selectedProduct = productFilter.value;
+
+      productFilter.innerHTML = `
+        <option value="">
+          All Products
+        </option>
+      `;
+
+      PRODUCT_CATEGORIES.forEach(product => {
+        const option =
+          document.createElement(
+            "option"
+          );
+
+        option.value =
+          product;
+
+        option.textContent =
+          product;
+
+        productFilter.appendChild(
+          option
+        );
+      });
+
+      if (PRODUCT_CATEGORIES.includes(selectedProduct)) {
+        productFilter.value = selectedProduct;
+      }
+    }
+
+    function hasActiveFilters() {
+      return Boolean(
+        searchInput.value.trim() ||
+        productFilter.value ||
+        marketplaceFilter.value ||
+        countryFilter.value ||
+        conditionFilter.value ||
+        shippingFilter.value ||
+        sortPrice.value
+      );
+    }
+
+    async function fetchListingsPage(cursorMillis = null) {
+      const activeListings = [];
+      const knownIds =
+        new Set(
+          allListings.map(item => item.id)
+        );
+      let currentCursorMillis = cursorMillis;
+      let fetchedFullBatch = false;
+      let batchCount = 0;
+
+      while (activeListings.length < PAGE_SIZE && batchCount < MAX_FETCH_BATCHES) {
+        const queryParts = [
+          collection(db, "listings"),
+          orderBy("createdAt", "desc")
+        ];
+
+        if (currentCursorMillis) {
+          queryParts.push(
+            startAfter(
+              Timestamp.fromMillis(currentCursorMillis)
+            )
+          );
+        }
+
+        queryParts.push(
+          limit(FETCH_BATCH_SIZE)
+        );
+
+        const snap =
+          await getDocs(
+            query(...queryParts)
+          );
+
+        if (snap.empty) {
+          fetchedFullBatch = false;
+          break;
+        }
+
+        fetchedFullBatch = snap.docs.length === FETCH_BATCH_SIZE;
+
+        const lastDoc =
+          snap.docs[snap.docs.length - 1];
+
+        currentCursorMillis =
+          timestampToMillis(
+            lastDoc.data().createdAt
+          );
+
+        const now =
+          Date.now();
+
+        for (const docSnap of snap.docs) {
+          const item =
+            normalizeListingForCache({
+              id: docSnap.id,
+              ...docSnap.data()
+            });
+
+          if (
+            knownIds.has(item.id) ||
+            activeListings.some(listing => listing.id === item.id) ||
+            !isActiveListing(item, now)
+          ) {
+            continue;
+          }
+
+          activeListings.push(item);
+        }
+
+        batchCount++;
+
+        if (!fetchedFullBatch || !currentCursorMillis) {
+          break;
+        }
+      }
+
+      return {
+        listings: activeListings,
+        nextCursorMillis: currentCursorMillis,
+        hasMoreListings: fetchedFullBatch
+      };
     }
 
     // CHECK IF LISTING URL LOOKS VALID
@@ -1173,7 +1403,7 @@ ${!listingStatus.valid ? `
     }
 
     // FILTERS
-    function applyFilters() {
+    function applyFilters(resetVisibleCount = true) {
 
       let filtered =
         [...allListings];
@@ -1329,7 +1559,19 @@ ${!listingStatus.valid ? `
       }
 
       filteredListings = filtered;
-      visibleCount = PAGE_SIZE;
+
+      if (resetVisibleCount) {
+        visibleCount = PAGE_SIZE;
+      } else {
+        visibleCount = Math.max(
+          PAGE_SIZE,
+          Math.min(
+            visibleCount,
+            filteredListings.length || PAGE_SIZE
+          )
+        );
+      }
+
       renderListings(filteredListings.slice(0, visibleCount));
 
     }
@@ -1339,95 +1581,104 @@ ${!listingStatus.valid ? `
     async function loadListings() {
 
       try {
+        const cached =
+          readBrowseCache();
 
-        const q =
-          query(
-            collection(db, "listings"),
-            orderBy("createdAt", "desc")
-          );
+        if (cached) {
+          browseCacheFetchedAt =
+            Number(cached.cachedAt);
 
-        const snap =
-          await getDocs(q);
+          allListings =
+            cached.listings
+              .map(normalizeListingForCache)
+              .filter(item => isActiveListing(item));
 
-        const now =
-          Date.now();
+          visibleCount =
+            Math.max(
+              PAGE_SIZE,
+              Math.min(
+                Number(cached.visibleCount || PAGE_SIZE),
+                allListings.length || PAGE_SIZE
+              )
+            );
 
-        const FIVE_DAYS =
-          5 * 24 * 60 * 60 * 1000;
+          nextCursorMillis =
+            Number(cached.nextCursorMillis || 0) || null;
 
-        const activeListings = [];
+          hasMoreListings =
+            cached.hasMoreListings !== false;
 
-        for (const docSnap of snap.docs) {
-
-          const item = {
-            id: docSnap.id,
-            ...docSnap.data()
-          };
-
-          // HIDE SOLD
-          if (item.sold === true) {
-            continue;
-          }
-
-          // OLD LISTINGS FALLBACK
-          const renewalDate =
-            item.renewedAt ||
-            item.createdAt;
-
-          if (!renewalDate) {
-            continue;
-          }
-
-          const renewalAge =
-            now -
-            renewalDate
-              .toDate()
-              .getTime();
-
-          // EXPIRED
-          if (renewalAge > FIVE_DAYS) {
-            continue;
-          }
-
-          activeListings.push(item);
+          cleanupMatches();
+          checkAlerts(allListings);
+          renderMatches();
+          populateProductFilter();
+          applyFilters(false);
+          return;
 
         }
 
-        allListings = activeListings;
+        const page =
+          await fetchListingsPage();
+
+        allListings =
+          page.listings;
+
+        nextCursorMillis =
+          page.nextCursorMillis;
+
+        hasMoreListings =
+          page.hasMoreListings;
+
+        visibleCount =
+          PAGE_SIZE;
 
         cleanupMatches();
         checkAlerts(allListings);
         renderMatches();
-
-        // PRODUCT FILTER
-        productFilter.innerHTML = `
-          <option value="">
-            All Products
-          </option>
-        `;
-
-        PRODUCT_CATEGORIES.forEach(product => {
-
-          const option =
-            document.createElement(
-              "option"
-            );
-
-          option.value =
-            product;
-
-          option.textContent =
-            product;
-
-          productFilter.appendChild(
-            option
-          );
-
-        });
-
-        applyFilters();
+        populateProductFilter();
+        writeBrowseCache(true);
+        applyFilters(false);
 
       } catch (e) {
+        const staleCache =
+          readBrowseCache(true);
+
+        if (staleCache) {
+          browseCacheFetchedAt =
+            Number(staleCache.cachedAt);
+
+          console.warn(
+            "Using stale browse cache after listing fetch failed",
+            e
+          );
+
+          allListings =
+            staleCache.listings
+              .map(normalizeListingForCache)
+              .filter(item => isActiveListing(item));
+
+          visibleCount =
+            Math.max(
+              PAGE_SIZE,
+              Math.min(
+                Number(staleCache.visibleCount || PAGE_SIZE),
+                allListings.length || PAGE_SIZE
+              )
+            );
+
+          nextCursorMillis =
+            Number(staleCache.nextCursorMillis || 0) || null;
+
+          hasMoreListings =
+            staleCache.hasMoreListings !== false;
+
+          cleanupMatches();
+          checkAlerts(allListings);
+          renderMatches();
+          populateProductFilter();
+          applyFilters(false);
+          return;
+        }
 
         console.error(e);
 
@@ -1810,13 +2061,70 @@ ${!listingStatus.valid ? `
       applyFilters();
     });
 
-    window.addEventListener("scroll", () => {
+    window.addEventListener("scroll", async () => {
       const nearBottom = window.innerHeight + window.scrollY >= document.body.offsetHeight - 500;
-      if (!nearBottom || visibleCount >= filteredListings.length) return;
-      const oldCount = visibleCount;
-      visibleCount += PAGE_SIZE;
-      document.querySelector(".load-more-sentinel")?.remove();
-      renderListings(filteredListings.slice(oldCount, visibleCount), true);
+      if (!nearBottom || isLoadingMoreListings) return;
+
+      if (visibleCount < filteredListings.length) {
+        const oldCount = visibleCount;
+        visibleCount += PAGE_SIZE;
+        document.querySelector(".load-more-sentinel")?.remove();
+        renderListings(filteredListings.slice(oldCount, visibleCount), true);
+        writeBrowseCache();
+        return;
+      }
+
+      if (hasActiveFilters() || !hasMoreListings) {
+        return;
+      }
+
+      isLoadingMoreListings = true;
+
+      const sentinel =
+        document.querySelector(".load-more-sentinel");
+
+      if (sentinel) {
+        sentinel.textContent = "Loading more deals...";
+      }
+
+      try {
+        const page =
+          await fetchListingsPage(nextCursorMillis);
+
+        if (!page.listings.length) {
+          hasMoreListings =
+            page.hasMoreListings;
+
+          nextCursorMillis =
+            page.nextCursorMillis || nextCursorMillis;
+
+          writeBrowseCache(true);
+          return;
+        }
+
+        allListings =
+          [
+            ...allListings,
+            ...page.listings
+          ];
+
+        nextCursorMillis =
+          page.nextCursorMillis;
+
+        hasMoreListings =
+          page.hasMoreListings;
+
+        visibleCount += PAGE_SIZE;
+        writeBrowseCache(true);
+        applyFilters(false);
+      } catch (error) {
+        console.error(
+          "Failed loading more listings",
+          error
+        );
+      } finally {
+        isLoadingMoreListings = false;
+      }
     }, { passive: true });
 
     const params = new URLSearchParams(window.location.search);
