@@ -506,8 +506,11 @@
     let visibleCount = 21;
     const PAGE_SIZE = 21;
     const CACHE_TTL_MS = 30 * 60 * 1000;
+    const EBAY_CACHE_TTL_MS = 60 * 60 * 1000;
     const FIVE_DAYS_MS = 5 * 24 * 60 * 60 * 1000;
-    const BROWSE_CACHE_KEY = "pcpartdealsBrowseListingsCacheV2";
+    const BROWSE_CACHE_KEY = "pcpartdealsBrowseListingsCacheV3";
+    const EBAY_CACHE_KEY = "pcpartdealsEbayListingsCacheV1";
+    const EBAY_LISTINGS_API_URL = "https://api.pcpartdeals.eu/api/ebay/listings";
     let browseCacheFetchedAt = null;
 
     const PRODUCT_CATEGORIES = [
@@ -559,6 +562,7 @@
       if (!country) return true;
       const itemCountry = getMarketplaceCountry(item);
       if (itemCountry && itemCountry.toLowerCase() === country.toLowerCase()) return true;
+      if (itemCountry) return false;
       return (marketplaceCountries[item.marketplace] || []).includes(country);
     }
 
@@ -571,6 +575,24 @@
       if (typeof value.seconds === "number") return value.seconds * 1000;
       if (typeof value._seconds === "number") return value._seconds * 1000;
       return 0;
+    }
+
+    function normalizeCountry(value) {
+      const country =
+        String(value || "")
+          .trim()
+          .toUpperCase();
+
+      const countryMap = {
+        DE: "Germany",
+        FR: "France",
+        ES: "Spain",
+        EE: "Estonia",
+        GB: "United Kingdom",
+        UK: "United Kingdom"
+      };
+
+      return countryMap[country] || value || "";
     }
 
     function normalizeListingForCache(item) {
@@ -591,9 +613,15 @@
         username: item.username || "",
         productCategory: item.productCategory || "",
         productType: item.productType || "",
-        country: item.country || "",
-        marketplaceCountry: item.marketplaceCountry || "",
-        locationCountry: item.locationCountry || "",
+        productModel: item.productModel || "",
+        currency: item.currency || "EUR",
+        listingMarketplaceId: item.listingMarketplaceId || "",
+        dealScore: Number(item.dealScore || 0),
+        marketPrice: Number(item.marketPrice || 0),
+        source: item.source || "",
+        country: normalizeCountry(item.country),
+        marketplaceCountry: normalizeCountry(item.marketplaceCountry),
+        locationCountry: normalizeCountry(item.locationCountry),
         sold: item.sold === true,
         createdAt: createdAtMillis,
         renewedAt: renewedAtMillis,
@@ -649,6 +677,172 @@
         );
       } catch (error) {
         console.warn("Failed writing browse cache", error);
+      }
+    }
+
+    function readEbayCache(allowExpired = false) {
+      try {
+        const cached = JSON.parse(
+          localStorage.getItem(EBAY_CACHE_KEY) || "null"
+        );
+
+        if (!cached || !cached.cachedAt || !Array.isArray(cached.listings)) {
+          return null;
+        }
+
+        if (!allowExpired && Date.now() - Number(cached.cachedAt) >= EBAY_CACHE_TTL_MS) {
+          return null;
+        }
+
+        return cached;
+      } catch (error) {
+        console.warn("Failed reading eBay listings cache", error);
+        return null;
+      }
+    }
+
+    function writeEbayCache(listings, metadata = {}) {
+      try {
+        localStorage.setItem(
+          EBAY_CACHE_KEY,
+          JSON.stringify({
+            cachedAt: Date.now(),
+            generatedAt: metadata.generatedAt || "",
+            total: Number(metadata.total || listings.length),
+            listings
+          })
+        );
+      } catch (error) {
+        console.warn("Failed writing eBay listings cache", error);
+      }
+    }
+
+    function normalizeEbayListing(item) {
+      const scrapedAtMillis =
+        timestampToMillis(item.scrapedAt) ||
+        timestampToMillis(item.generatedAt) ||
+        Date.now();
+
+      return normalizeListingForCache({
+        ...item,
+        id: `ebay:${item.id || item.externalLink || item.title}`,
+        marketplace: "eBay",
+        sellerUsername: "eBay",
+        username: "eBay",
+        condition: item.condition || "Used",
+        shippingPrice: Number(item.shippingPrice || 0),
+        totalPrice: Number(item.totalPrice || (Number(item.price || 0) + Number(item.shippingPrice || 0))),
+        imageUrl: item.imageUrl || "images/logo.png",
+        externalLink: item.externalLink || "",
+        productCategory: item.productCategory || "",
+        productType: item.productCategory || "",
+        source: "api.pcpartdeals.eu",
+        createdAt: scrapedAtMillis,
+        renewedAt: scrapedAtMillis
+      });
+    }
+
+    async function fetchEbayDealListingsFromApi() {
+      const listings = [];
+      let offset = 0;
+      let total = 0;
+      let generatedAt = "";
+      const limit = 100;
+      const maxOffset = 1000;
+
+      while (offset <= maxOffset) {
+        const url =
+          new URL(EBAY_LISTINGS_API_URL);
+
+        url.searchParams.set("limit", String(limit));
+        url.searchParams.set("offset", String(offset));
+        url.searchParams.set("sort", "score");
+
+        const response =
+          await fetch(url.toString(), {
+            headers: {
+              Accept: "application/json"
+            }
+          });
+
+        if (!response.ok) {
+          throw new Error(`eBay listings API failed with ${response.status}`);
+        }
+
+        const payload =
+          await response.json();
+
+        const pageListings =
+          Array.isArray(payload.listings)
+            ? payload.listings
+            : [];
+
+        generatedAt =
+          payload.generatedAt || generatedAt;
+
+        total =
+          Number(payload.total || pageListings.length || total);
+
+        listings.push(
+          ...pageListings.map(item =>
+            normalizeEbayListing({
+              ...item,
+              generatedAt
+            })
+          )
+        );
+
+        offset += limit;
+
+        if (!pageListings.length || listings.length >= total || offset > maxOffset) {
+          break;
+        }
+      }
+
+      const dedupedListings =
+        Array.from(
+          new Map(
+            listings.map(item => [item.id, item])
+          ).values()
+        );
+
+      writeEbayCache(dedupedListings, {
+        generatedAt,
+        total
+      });
+
+      return dedupedListings;
+    }
+
+    async function loadEbayDealListings() {
+      const cached =
+        readEbayCache();
+
+      if (cached) {
+        return cached.listings.map(normalizeListingForCache);
+      }
+
+      try {
+        return await fetchEbayDealListingsFromApi();
+      } catch (error) {
+        const staleCache =
+          readEbayCache(true);
+
+        if (staleCache) {
+          console.warn(
+            "Using stale eBay listings cache after API fetch failed",
+            error
+          );
+
+          return staleCache.listings.map(normalizeListingForCache);
+        }
+
+        console.error(
+          "Failed loading eBay listings from API",
+          error
+        );
+
+        return [];
       }
     }
 
@@ -711,7 +905,20 @@
         activeListings.push(item);
       }
 
-      return activeListings;
+      const ebayListings =
+        await loadEbayDealListings();
+
+      const mergedListings =
+        [
+          ...activeListings,
+          ...ebayListings
+        ];
+
+      return Array.from(
+        new Map(
+          mergedListings.map(item => [item.id, item])
+        ).values()
+      );
     }
 
     // CHECK IF LISTING URL LOOKS VALID
@@ -1362,8 +1569,8 @@ ${!listingStatus.valid ? `
         filtered =
           filtered.filter(x =>
 
-            x.title
-              ?.toLowerCase()
+            `${x.title || ""} ${x.productModel || ""}`
+              .toLowerCase()
               .includes(search)
 
           );
