@@ -423,6 +423,105 @@
       return element.innerHTML;
     }
 
+    const OFFICIAL_EUROPEAN_EBAY_DOMAINS = {
+      AT: "ebay.at",
+      BE: "ebay.be",
+      CH: "ebay.ch",
+      DE: "ebay.de",
+      ES: "ebay.es",
+      FR: "ebay.fr",
+      IE: "ebay.ie",
+      IT: "ebay.it",
+      NL: "ebay.nl",
+      PL: "ebay.pl"
+    };
+
+    const TIMEZONE_EBAY_REGIONS = {
+      "Europe/Amsterdam": "NL",
+      "Europe/Andorra": "ES",
+      "Europe/Belgrade": "DE",
+      "Europe/Berlin": "DE",
+      "Europe/Brussels": "BE",
+      "Europe/Dublin": "IE",
+      "Europe/Gibraltar": "ES",
+      "Europe/Luxembourg": "DE",
+      "Europe/Madrid": "ES",
+      "Europe/Monaco": "FR",
+      "Europe/Paris": "FR",
+      "Europe/Rome": "IT",
+      "Europe/San_Marino": "IT",
+      "Europe/Vaduz": "CH",
+      "Europe/Vatican": "IT",
+      "Europe/Vienna": "AT",
+      "Europe/Warsaw": "PL",
+      "Europe/Zurich": "CH"
+    };
+
+    function getUserEbayDomain() {
+      const timezone =
+        Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      const timezoneRegion =
+        TIMEZONE_EBAY_REGIONS[timezone];
+
+      if (timezoneRegion) {
+        return OFFICIAL_EUROPEAN_EBAY_DOMAINS[timezoneRegion];
+      }
+
+      const languages =
+        navigator.languages?.length
+          ? navigator.languages
+          : [navigator.language];
+
+      for (const language of languages) {
+        const region =
+          String(language || "")
+            .split(/[-_]/)
+            .pop()
+            .toUpperCase();
+
+        if (OFFICIAL_EUROPEAN_EBAY_DOMAINS[region]) {
+          return OFFICIAL_EUROPEAN_EBAY_DOMAINS[region];
+        }
+      }
+
+      return "";
+    }
+
+    const userEbayDomain =
+      getUserEbayDomain();
+
+    function getLocalizedEbayListingUrl(url) {
+      if (!url || !userEbayDomain) {
+        return url;
+      }
+
+      try {
+        const parsed =
+          new URL(url);
+
+        const hostname =
+          parsed.hostname
+            .toLowerCase()
+            .replace(/^www\./, "");
+
+        const isSupportedEuropeanEbayListing =
+          Object.values(OFFICIAL_EUROPEAN_EBAY_DOMAINS)
+            .includes(hostname);
+
+        if (!isSupportedEuropeanEbayListing) {
+          return url;
+        }
+
+        parsed.hostname =
+          userEbayDomain;
+
+        return parsed.toString();
+      } catch (error) {
+        return url;
+      }
+    }
+
     function readCache(key, allowExpired = false, ttlMs = CACHE_TTL_MS) {
       try {
         const cached = JSON.parse(localStorage.getItem(key) || "null");
@@ -585,23 +684,28 @@
         return;
       }
 
-      homeListingGrid.innerHTML = listings.map(item => `
-        <article class="home-listing-card">
-          <a class="home-listing-image" href="${escapeHtml(item.externalLink || "https://pcpartdeals.eu/browse")}" target="_blank" rel="noopener noreferrer">
-            <img src="${escapeHtml(item.imageUrl || "images/logo.png")}" alt="${escapeHtml(item.title || "PC hardware listing")}" loading="lazy" referrerpolicy="no-referrer">
-          </a>
-          <div class="home-listing-content">
-            <span class="home-listing-type">${escapeHtml(item.productCategory || item.productType || "PC Hardware")}</span>
-            <h3>${escapeHtml(item.title || "PC hardware deal")}</h3>
-            <div class="home-listing-footer">
-              <strong>€${Number(item.totalPrice || item.price || 0).toFixed(2)}</strong>
-              <a href="${escapeHtml(item.externalLink || "https://pcpartdeals.eu/browse")}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(item.title || "listing")}">
-                <img src="icons/view-eye-svgrepo-com.svg" alt="" aria-hidden="true">
-              </a>
+      homeListingGrid.innerHTML = listings.map(item => {
+        const listingUrl =
+          getLocalizedEbayListingUrl(item.externalLink || "https://pcpartdeals.eu/browse");
+
+        return `
+          <article class="home-listing-card">
+            <a class="home-listing-image" href="${escapeHtml(listingUrl)}" target="_blank" rel="noopener noreferrer">
+              <img src="${escapeHtml(item.imageUrl || "images/logo.png")}" alt="${escapeHtml(item.title || "PC hardware listing")}" loading="lazy" referrerpolicy="no-referrer">
+            </a>
+            <div class="home-listing-content">
+              <span class="home-listing-type">${escapeHtml(item.productCategory || item.productType || "PC Hardware")}</span>
+              <h3>${escapeHtml(item.title || "PC hardware deal")}</h3>
+              <div class="home-listing-footer">
+                <strong>€${Number(item.totalPrice || item.price || 0).toFixed(2)}</strong>
+                <a href="${escapeHtml(listingUrl)}" target="_blank" rel="noopener noreferrer" aria-label="View ${escapeHtml(item.title || "listing")}">
+                  <img src="icons/view-eye-svgrepo-com.svg" alt="" aria-hidden="true">
+                </a>
+              </div>
             </div>
-          </div>
-        </article>
-      `).join("");
+          </article>
+        `;
+      }).join("");
     }
 
     async function loadHomepageData() {

@@ -595,6 +595,105 @@
       return countryMap[country] || value || "";
     }
 
+    const OFFICIAL_EUROPEAN_EBAY_DOMAINS = {
+      AT: "ebay.at",
+      BE: "ebay.be",
+      CH: "ebay.ch",
+      DE: "ebay.de",
+      ES: "ebay.es",
+      FR: "ebay.fr",
+      IE: "ebay.ie",
+      IT: "ebay.it",
+      NL: "ebay.nl",
+      PL: "ebay.pl"
+    };
+
+    const TIMEZONE_EBAY_REGIONS = {
+      "Europe/Amsterdam": "NL",
+      "Europe/Andorra": "ES",
+      "Europe/Belgrade": "DE",
+      "Europe/Berlin": "DE",
+      "Europe/Brussels": "BE",
+      "Europe/Dublin": "IE",
+      "Europe/Gibraltar": "ES",
+      "Europe/Luxembourg": "DE",
+      "Europe/Madrid": "ES",
+      "Europe/Monaco": "FR",
+      "Europe/Paris": "FR",
+      "Europe/Rome": "IT",
+      "Europe/San_Marino": "IT",
+      "Europe/Vaduz": "CH",
+      "Europe/Vatican": "IT",
+      "Europe/Vienna": "AT",
+      "Europe/Warsaw": "PL",
+      "Europe/Zurich": "CH"
+    };
+
+    function getUserEbayDomain() {
+      const timezone =
+        Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+      const timezoneRegion =
+        TIMEZONE_EBAY_REGIONS[timezone];
+
+      if (timezoneRegion) {
+        return OFFICIAL_EUROPEAN_EBAY_DOMAINS[timezoneRegion];
+      }
+
+      const languages =
+        navigator.languages?.length
+          ? navigator.languages
+          : [navigator.language];
+
+      for (const language of languages) {
+        const region =
+          String(language || "")
+            .split(/[-_]/)
+            .pop()
+            .toUpperCase();
+
+        if (OFFICIAL_EUROPEAN_EBAY_DOMAINS[region]) {
+          return OFFICIAL_EUROPEAN_EBAY_DOMAINS[region];
+        }
+      }
+
+      return "";
+    }
+
+    const userEbayDomain =
+      getUserEbayDomain();
+
+    function getLocalizedEbayListingUrl(url) {
+      if (!url || !userEbayDomain) {
+        return url;
+      }
+
+      try {
+        const parsed =
+          new URL(url);
+
+        const hostname =
+          parsed.hostname
+            .toLowerCase()
+            .replace(/^www\./, "");
+
+        const isSupportedEuropeanEbayListing =
+          Object.values(OFFICIAL_EUROPEAN_EBAY_DOMAINS)
+            .includes(hostname);
+
+        if (!isSupportedEuropeanEbayListing) {
+          return url;
+        }
+
+        parsed.hostname =
+          userEbayDomain;
+
+        return parsed.toString();
+      } catch (error) {
+        return url;
+      }
+    }
+
     function normalizeListingForCache(item) {
       const createdAtMillis = timestampToMillis(item.createdAt || item._createdAtMillis);
       const renewedAtMillis = timestampToMillis(item.renewedAt || item._renewedAtMillis);
@@ -1267,6 +1366,9 @@
         const profileUrl =
           `https://pcpartdeals.eu/profile.html?user=${encodeURIComponent(username)}`;
 
+        const listingUrl =
+          getLocalizedEbayListingUrl(item.externalLink || "");
+
         const card =
           document.createElement("div");
 
@@ -1275,7 +1377,7 @@
 
         const listingStatus =
           await checkListingStatus(
-            item.externalLink
+            listingUrl
           );
 
         if (!listingStatus.valid) {
@@ -1339,7 +1441,7 @@ ${!listingStatus.valid ? `
         <div class="listing-actions">
 
           <a
-  href="${item.externalLink}"
+  href="${escapeHtml(listingUrl)}"
   target="_blank"
   rel="noopener noreferrer"
   class="view-btn ${!listingStatus.valid ? 'disabled-btn' : ''}"
