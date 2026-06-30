@@ -197,7 +197,8 @@
       </label>
       <button class="control-btn alert-control" id="alertsBtn" type="button">
         <img src="icons/notifications-svgrepo-com.svg" alt="" aria-hidden="true">
-        Alerts <span id="matchCountBadge">0</span>
+        <span id="alertsButtonLabel">No saved search alerts yet</span>
+        <span id="matchCountBadge" hidden>0</span>
       </button>
     </div>
   </section>
@@ -299,7 +300,10 @@
       <button id="addAlertBtn" type="button">Add Alert</button>
     </div>
     <div id="alertList"></div>
-    <h3>Matches (<span id="matchCount">0</span>)</h3>
+    <h3 id="matchHeading">
+      <span id="matchHeadingLabel">No saved search alerts yet</span>
+      <span id="matchCountWrap" hidden>(<span id="matchCount">0</span>)</span>
+    </h3>
     <div id="matchList"></div>
   </section>
 
@@ -1320,13 +1324,6 @@
 
     }
 
-    // 25% CHANCE
-    function shouldShowAffiliate() {
-
-      return Math.random() < 0.25;
-
-    }
-
     // RENDER
     async function renderListings(data, append = false) {
 
@@ -1555,56 +1552,8 @@ ${!listingStatus.valid ? `
           }
 
 
-          const useAffiliateDirectly =
-            affiliateAds.length > 0 &&
-            shouldShowAffiliate();
-
-          // 25% DIRECT AFFILIATE
-          if (useAffiliateDirectly) {
-
-            renderAffiliateAd();
-
-          } else {
-
-            // NORMAL AD
-            adCard.innerHTML = `
-          <div class="listing-content ad-content">
-
-            <div
-              class="tinyadz-container"
-              ta-ad-container=""
-            ></div>
-
-          </div>
-        `;
-
-          }
-
+          renderAffiliateAd();
           listingGrid.appendChild(adCard);
-
-          // FALLBACK IF BLOCKED
-          if (!useAffiliateDirectly) {
-
-            setTimeout(() => {
-
-              const adContainer =
-                adCard.querySelector(
-                  ".tinyadz-container"
-                );
-
-              const blocked =
-                !adContainer ||
-                adContainer.offsetHeight < 20;
-
-              if (blocked) {
-
-                renderAffiliateAd();
-
-              }
-
-            }, 2500);
-
-          }
 
         }
 
@@ -1910,6 +1859,17 @@ ${!listingStatus.valid ? `
 
       alertList.innerHTML = "";
 
+      if (!alerts.length) {
+        alertList.innerHTML = `
+          <div class="alert-empty">
+            <strong>No saved search alerts yet</strong>
+            <p>Save a search to get notified when matching PC part deals appear</p>
+          </div>
+        `;
+
+        return;
+      }
+
       alerts.forEach(
         (alert, index) => {
 
@@ -1966,6 +1926,7 @@ ${!listingStatus.valid ? `
               );
 
               renderAlerts();
+              renderMatches();
 
             }
           );
@@ -2053,6 +2014,7 @@ ${!listingStatus.valid ? `
         );
 
         renderAlerts();
+        renderMatches();
 
         alertKeyword.value = "";
         alertPrice.value = "";
@@ -2145,14 +2107,49 @@ ${!listingStatus.valid ? `
 
     }
 
+    function updateAlertsSummary() {
+      const hasSavedAlerts =
+        alerts.length > 0;
+
+      if (alertsButtonLabel) {
+        alertsButtonLabel.textContent =
+          hasSavedAlerts
+            ? "Alerts"
+            : "No saved search alerts yet";
+      }
+
+      if (matchCountBadge) {
+        matchCountBadge.hidden =
+          !hasSavedAlerts;
+
+        matchCountBadge.textContent =
+          matches.length;
+      }
+
+      if (matchHeadingLabel) {
+        matchHeadingLabel.textContent =
+          hasSavedAlerts
+            ? "Matches"
+            : "No saved search alerts yet";
+      }
+
+      if (matchCountWrap) {
+        matchCountWrap.hidden =
+          !hasSavedAlerts;
+      }
+
+      matchCount.textContent =
+        matches.length;
+    }
+
     function renderMatches() {
 
       matchList.innerHTML = "";
 
-      matchCount.textContent =
-        matches.length;
-      if (matchCountBadge) {
-        matchCountBadge.textContent = matches.length;
+      updateAlertsSummary();
+
+      if (!alerts.length) {
+        return;
       }
 
       matches
@@ -2256,6 +2253,9 @@ ${!listingStatus.valid ? `
     const alertsModal = document.getElementById("alertsModal");
     const alertsOverlay = document.getElementById("alertsOverlay");
     const closeAlertsBtn = document.getElementById("closeAlertsBtn");
+    const alertsButtonLabel = document.getElementById("alertsButtonLabel");
+    const matchHeadingLabel = document.getElementById("matchHeadingLabel");
+    const matchCountWrap = document.getElementById("matchCountWrap");
     const matchCountBadge = document.getElementById("matchCountBadge");
 
     function openFilters() { filterDrawer.classList.add("open"); filterDrawer.setAttribute("aria-hidden", "false"); filtersOverlay.hidden = false; }
@@ -2325,9 +2325,6 @@ ${!listingStatus.valid ? `
 
   </script>
 
-  <script src="https://cdn.apitiny.net/scripts/v2.0/main.js" data-site-id="6a0f042d4b9c17c44c003e8c"
-    data-test-mode="false" async>
-    </script>
   <!-- FOOTER -->
   <footer class="footer">
 

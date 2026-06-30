@@ -539,6 +539,21 @@ select:focus {
   margin-bottom: 16px;
 }
 
+.alert-empty {
+  margin-top: 10px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  color: var(--text-light);
+  background: var(--surface);
+}
+
+.alert-empty strong {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--text);
+}
+
 .alert-item,
 .match-item {
   display: flex;
